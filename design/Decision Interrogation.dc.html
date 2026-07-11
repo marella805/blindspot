@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#0a2a43">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0a2a43"/>
+    <g fill="none" stroke="#7fb0d6" stroke-width="26" stroke-linecap="round">
+      <path d="M600 300 L600 480"/>
+      <path d="M470 360 L730 360"/>
+      <path d="M470 360 L410 500 M400 500 A70 70 0 0 0 540 500 Z" stroke-width="18"/>
+      <path d="M730 360 L670 500 M660 500 A70 70 0 0 0 800 500 Z" stroke-width="18"/>
+      <circle cx="600" cy="285" r="22" fill="#7fb0d6" stroke="none"/>
+    </g>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./atlas-tokens.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+  <style>
+    html, body { height: 100%; }
+    a { color: var(--blue-ink-600); text-decoration: none; }
+    a:hover { color: var(--blue-ink-700); text-decoration: underline; }
+    textarea.di-input { width: 100%; resize: none; border: 1px solid var(--input); border-radius: var(--radius-md); padding: 16px 18px; font-family: var(--font-sans); font-size: 16px; line-height: 26px; color: var(--fg); background: var(--card); outline: none; transition: border-color 150ms, box-shadow 150ms; }
+    textarea.di-input:focus { border-color: var(--blue-ink-500); box-shadow: 0 0 0 3px rgba(78,61,99,0.12); }
+    textarea.di-input::placeholder { color: var(--paper-250); }
+    .di-linkbtn { background: none; border: none; padding: 0; margin: 0; font-family: var(--font-sans); font-size: 14px; color: var(--blue-ink-600); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .di-linkbtn:hover { color: var(--blue-ink-700); text-decoration: underline; }
+    .di-stance { flex:1; text-align:left; display:flex; flex-direction:column; gap:8px; padding:18px 16px; border:1px solid rgba(255,255,255,0.10); border-radius:14px; background:#2C2239; cursor:pointer; font-family:var(--font-sans); transition:border-color 180ms, background 180ms, box-shadow 180ms; }
+    .di-stance:hover { border-color:rgba(184,209,74,0.4); background:#332942; }
+    .di-stance.on { border-color:#B8D14A; background:#332942; box-shadow:0 0 0 1px #B8D14A, 0 4px 18px rgba(184,209,74,0.18); }
+    .di-stance.on .di-stance-icon { background:#B8D14A; color:#17111F; }
+    .di-stance-icon { width:34px; height:34px; border-radius:9px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; color:#9B8EAC; margin-bottom:2px; transition:background 180ms, color 180ms; }
+    .di-navitem { position:relative; display:flex; align-items:center; gap:12px; padding:10px 12px 10px 14px; border-radius:10px; color:var(--blue-ink-100); font-size:14px; cursor:pointer; transition:background 180ms ease, color 180ms ease; }
+    .di-navitem i { color:var(--blue-ink-200); transition:color 180ms ease, transform 180ms ease; }
+    .di-navitem:hover { background:rgba(255,255,255,0.05); color:#fff; }
+    .di-navitem:hover i { color:var(--blue-ink-100); transform:translateX(2px); }
+    .di-navitem.active { color:#fff; background:linear-gradient(90deg, rgba(184,209,74,0.20), rgba(184,209,74,0.03)); box-shadow:inset 0 1px 0 rgba(255,255,255,0.06); }
+    .di-navitem.active i { color:#B8D14A; }
+    .di-navitem.active::before { content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:linear-gradient(180deg, #B8D14A, #A8C93F); box-shadow:0 0 8px rgba(184,209,74,0.7); }
+    .sb-aside { width:248px; flex-shrink:0; display:flex; flex-direction:column; padding:22px 16px; gap:24px; background:linear-gradient(168deg, #3A2F48 0%, #2E2439 52%, #1C1526 100%); border-right:1px solid rgba(255,255,255,0.06); box-shadow:8px 0 24px rgba(0,0,0,0.16); }
+    .sb-mark { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:linear-gradient(150deg, var(--blue-ink-400), var(--blue-ink-800)); box-shadow:0 4px 14px rgba(46,36,57,0.55), inset 0 1px 0 rgba(255,255,255,0.28); }
+    .sb-divider { height:1px; margin:0 6px; background:linear-gradient(90deg, transparent, rgba(127,176,214,0.4), transparent); }
+    .sb-foot { margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:11px; }
+    .sb-ring { width:38px; height:38px; border-radius:9999px; padding:2px; flex-shrink:0; background:linear-gradient(140deg, #B8D14A, var(--blue-ink-700)); box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+    .sb-avatar { width:100%; height:100%; border-radius:9999px; background:var(--blue-ink-900); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; }
+    .di-chip { display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 13px; border:1px solid var(--border); border-radius:9999px; background:var(--card); font-size:13px; color:var(--fg); }
+    .di-btn { display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 22px; border:none; border-radius:var(--radius-md); background:linear-gradient(150deg, #C6DA6B, #A8C93F); color:#1B1820; font-family:var(--font-sans); font-size:15px; font-weight:500; line-height:1; cursor:pointer; position:relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 1px 1px rgba(12,37,53,0.12); transition: background 150ms ease, box-shadow 150ms ease; }
+    .di-btn:hover { background:linear-gradient(150deg, #B8D14A, #9DBF35); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 6px rgba(12,37,53,0.16); }
+    .di-btn:active { background:linear-gradient(150deg, #A8C93F, #8FB030); box-shadow: inset 0 1px 2px rgba(0,0,0,0.18); }
+    .di-btn:focus-visible { outline:none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 0 0 3px rgba(78,61,99,0.35); }
+    .di-btn .di-btn-ico { font-size:16px; transition: transform 200ms var(--ease-out); }
+    .di-btn:hover .di-btn-ico { transform: translateX(3px); }
+    @keyframes di-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes di-numin { from { opacity: 0; transform: translateY(6px); } to { opacity: 0.9; transform: translateY(0); } }
+    .di-scroll::-webkit-scrollbar { width: 8px; }
+    .di-scroll::-webkit-scrollbar-thumb { background: var(--paper-150); border-radius: 8px; }
+  </style>
+  <style>
+:root{--bg:#EDE9E3;--fg:#1B1820;--fg-muted:#6B6470;--muted-fg:#6B6470;--card:#F8F5EF;--card-fg:#1B1820;--popover:#F8F5EF;--muted:#E4DED5;--border:#D8D0C6;--input:#CFC7BB;--primary:#3E2E52;--primary-fg:#EDE9E3;--primary-hover:#2E2439;--ring:#4E3D63;--accent:#EDE7F0;--accent-fg:#3A2F48;--blue-ink-50:#EDE7F0;--blue-ink-100:#DCD1E2;--blue-ink-200:#C4B4CE;--blue-ink-300:#A08CAE;--blue-ink-400:#6E5A82;--blue-ink-500:#4E3D63;--blue-ink-600:#453757;--blue-ink-700:#3A2E4A;--blue-ink-750:#332741;--blue-ink-800:#3A2F48;--blue-ink-900:#2E2439;--blue-ink-950:#241C2E;--lime:#B8D14A;--lime-deep:#A8C93F;} details.fu>summary{list-style:none;cursor:pointer;display:block} details.fu>summary::-webkit-details-marker{display:none} details.fu[open] .fu-caret{transform:rotate(180deg)}
+  </style>
+</helmet>
+
+<div style="display:flex; height:100vh; width:100%; overflow:hidden; background:var(--bg); font-family:var(--font-sans);">
+
+  <!-- Sidebar (always dark) -->
+  <aside class="sb-aside" style="background:linear-gradient(165deg, #2C2239 0%, #17111F 55%, #120C19 100%); gap:0;">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <span style="font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; color:#8E80A0;">Blindspot</span>
+      <button style="width:30px; height:30px; border-radius:9px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#B4A8C2; display:flex; align-items:center; justify-content:center; cursor:pointer;" aria-label="Collapse sidebar"><i class="ph-bold ph-caret-double-left" style="font-size:15px;"></i></button>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; margin-top:16px;">
+      <div style="position:relative; width:84px; height:84px;">
+        <svg viewBox="0 0 84 84" style="position:absolute; inset:0; transform:rotate(-90deg);"><circle cx="42" cy="42" r="38" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"></circle><circle cx="42" cy="42" r="38" fill="none" stroke="#B8D14A" stroke-width="4" stroke-linecap="round" stroke-dasharray="238.8" stroke-dashoffset="43"></circle></svg>
+        <span style="position:absolute; top:10px; left:10px; width:64px; height:64px; border-radius:9999px; background:#241C2E; color:#F5F1E8; display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:24px;">MO</span>
+        <span style="position:absolute; top:-2px; right:-2px; min-width:22px; height:22px; padding:0 6px; border-radius:9999px; background:#B8D14A; color:#17111F; border:2.5px solid #211A2B; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">2</span>
+      </div>
+      <div style="font-family:var(--font-serif); font-size:18px; color:#F5F1E8; margin-top:12px;">Maya Okonkwo</div>
+      <div style="display:inline-flex; align-items:center; gap:6px; margin-top:5px;"><span style="width:6px; height:6px; border-radius:9999px; background:#B8D14A;"></span><span style="font-size:11.5px; letter-spacing:0.04em; color:#CDE07A;">Calibration 82%</span></div>
+    </div>
+    <div style="height:1px; margin:22px 4px 14px; background:linear-gradient(90deg, transparent, rgba(184,209,74,0.4), transparent);"></div>
+    <nav style="display:flex; flex-direction:column; gap:4px;">
+      <div style="display:flex;align-items:center;gap:13px;padding:9px 11px;border-radius:12px;background:#B8D14A;color:#1B1820;font-weight:600;font-size:14px;"><span style="width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(27,24,32,0.14);"><i class="ph-fill ph-scales" style="font-size:17px;color:#1B1820;"></i></span>Decisions</div>
+      <div style="display:flex;align-items:center;gap:13px;padding:9px 11px;border-radius:12px;color:#B4A8C2;font-size:14px;"><span style="width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.05);"><i class="ph ph-arrow-u-up-left" style="font-size:17px;color:#8E80A0;"></i></span>Reflections</div>
+      <div style="display:flex;align-items:center;gap:13px;padding:9px 11px;border-radius:12px;color:#B4A8C2;font-size:14px;justify-content:space-between;"><span style="display:flex;align-items:center;gap:13px;"><span style="width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.05);"><i class="ph ph-chart-line-up" style="font-size:17px;color:#8E80A0;"></i></span>Patterns</span><span style="display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:9999px;background:#B8D14A;color:#17111F;font-size:11px;font-weight:700;">3</span></div>
+      <div style="display:flex;align-items:center;gap:13px;padding:9px 11px;border-radius:12px;color:#B4A8C2;font-size:14px;"><span style="width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.05);"><i class="ph ph-user" style="font-size:17px;color:#8E80A0;"></i></span>Profile</div>
+    </nav>
+    <details class="fu" style="margin-top:auto; position:relative;">
+      <summary style="list-style:none; border:1px solid rgba(184,209,74,0.28); border-radius:12px; background:rgba(184,209,74,0.06); padding:13px 14px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;"><span style="width:7px; height:7px; border-radius:9999px; background:#B8D14A;"></span><span style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#CDE07A; flex:1;">2 follow-ups due</span><i class="ph-bold ph-caret-up fu-caret" style="font-size:13px; color:#CDE07A; transition:transform 180ms ease;"></i></div>
+        <div style="font-size:12.5px; line-height:18px; color:#B4A8C2;">A decision from June is ready for its check-in.</div>
+      </summary>
+      <div class="fu-menu" style="position:absolute; left:0; right:0; bottom:calc(100% + 8px); background:#211A2B; border:1px solid rgba(255,255,255,0.12); border-radius:12px; box-shadow:0 -14px 36px rgba(0,0,0,0.45); overflow:hidden;">
+        <div style="padding:10px 14px; font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8E80A0; border-bottom:1px solid rgba(255,255,255,0.08);">Follow-ups due</div>
+        <div style="display:flex; align-items:flex-start; gap:10px; padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><i class="ph-bold ph-signpost" style="font-size:15px; color:#B8D14A; margin-top:1px; flex-shrink:0;"></i><div style="flex:1; min-width:0;"><div style="font-size:12.5px; color:#F5F1E8; line-height:17px;">Buy the condo, or keep renting?</div><div style="font-size:11px; color:#8E80A0; margin-top:2px;">Due today</div></div></div>
+        <div style="display:flex; align-items:flex-start; gap:10px; padding:11px 14px; cursor:pointer;"><i class="ph-bold ph-signpost" style="font-size:15px; color:#B8D14A; margin-top:1px; flex-shrink:0;"></i><div style="flex:1; min-width:0;"><div style="font-size:12.5px; color:#F5F1E8; line-height:17px;">Say yes to the board seat, or protect my time?</div><div style="font-size:11px; color:#8E80A0; margin-top:2px;">Due in 3 days</div></div></div>
+      </div>
+    </details>
+  </aside>
+
+  <!-- Main -->
+  <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+
+    <!-- Topbar -->
+    <header style="height:60px; flex-shrink:0; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; background:var(--bg);">
+      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+        <i class="ph ph-arrow-left" style="font-size:16px; color:var(--fg-muted);"></i>
+        <span style="font-size:14px; color:var(--fg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:520px;">Law school: School A (T-10) vs. School B (regional, full scholarship)</span>
+        <span style="display:inline-flex; align-items:center; height:22px; padding:0 10px; border-radius:9999px; background:var(--muted); color:var(--fg-muted); font-size:12px;">Draft</span>
+      </div>
+      <button class="di-linkbtn" onClick="{{ onSaveDraft }}"><i class="ph ph-floppy-disk" style="font-size:15px;"></i>{{ saveLabel }}</button>
+    </header>
+
+    <!-- Body -->
+    <div style="flex:1; display:flex; min-height:0;">
+
+      <!-- Interrogation column -->
+      <main class="di-scroll" style="flex:1; overflow-y:auto; min-width:0; display:flex; justify-content:center;">
+        <div style="width:100%; max-width:680px; padding:52px 40px 80px;">
+
+          <!-- INTRO -->
+          <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
+            <div style="animation:di-enter 320ms var(--ease-out);">
+              <div style="font-size:13px; color:var(--blue-ink-600); margin-bottom:20px; display:flex; align-items:center; gap:7px;"><i class="ph-fill ph-circle" style="font-size:8px;"></i>New interrogation</div>
+              <h1 style="margin-bottom:16px;">Before you decide,<br>defend it.</h1>
+              <div style="width:110px; height:2px; background:linear-gradient(90deg, var(--blue-ink-600), transparent); margin-bottom:24px;"></div>
+              <p class="lead" style="margin-bottom:28px;">This is not a pros and cons list. You will be asked to justify your reasoning, and it will be pushed on wherever it is weak. The session ends when your position holds, not when you have typed enough.</p>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:34px;">
+                <span class="di-chip"><i class="ph ph-list-numbers" style="font-size:15px; color:var(--blue-ink-600);"></i>At least 5 questions</span>
+                <span class="di-chip"><i class="ph ph-warning-diamond" style="font-size:15px; color:var(--warning);"></i>Real pushback</span>
+                <span class="di-chip"><i class="ph ph-user-focus" style="font-size:15px; color:var(--blue-ink-600);"></i>Calibrated to your profile</span>
+              </div>
+
+              <div style="border-left:2px solid var(--blue-ink-600); padding:4px 0 4px 20px; margin-bottom:30px;">
+                <div class="muted" style="margin-bottom:8px;">The decision you logged</div>
+                <p style="font-family:var(--font-serif); font-size:20px; line-height:1.5;">Choosing between <strong style="font-weight:400; color:var(--blue-ink-700);">School A</strong> (top-10, prestige, national firm and clerkship network) and <strong style="font-weight:400; color:var(--blue-ink-700);">School B</strong> (stronger regional placement, better-fit program, and a full-tuition scholarship that closes a $150,000 gap).</p>
+              </div>
+              <div style="border:1px solid var(--blue-ink-100); background:var(--blue-ink-50); border-radius:var(--radius-lg); padding:16px 18px; margin-bottom:36px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px; color:var(--blue-ink-700);"><i class="ph-fill ph-sparkle" style="font-size:16px;"></i><span style="font-size:13px; font-weight:500;">Pattern alert — this looks like an either/or</span></div>
+                <div class="muted" style="margin-bottom:14px;">You've framed three past decisions as all-or-nothing. The interrogation will hold this one to what you learned there.</div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:flex; align-items:center; gap:12px; padding:11px 13px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);">
+                    <i class="ph-bold ph-signpost" style="font-size:16px; color:var(--blue-ink-600); flex-shrink:0;"></i>
+                    <div style="flex:1; min-width:0;"><div style="font-size:12px; color:var(--fg-muted);">Career · decided Jul 2</div><div style="font-size:14px; color:var(--fg);">Take the Denver offer, or stay put?</div></div>
+                    <span style="flex-shrink:0; font-size:11.5px; color:var(--fg-muted);">Chose to stay</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:12px; padding:11px 13px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);">
+                    <i class="ph-bold ph-signpost" style="font-size:16px; color:var(--blue-ink-600); flex-shrink:0;"></i>
+                    <div style="flex:1; min-width:0;"><div style="font-size:12px; color:var(--fg-muted);">Financial · decided Jun 24</div><div style="font-size:14px; color:var(--fg);">Buy the condo now, or keep renting forever?</div></div>
+                    <span style="flex-shrink:0; font-size:11.5px; color:var(--fg-muted);">Bought</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:12px; padding:11px 13px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);">
+                    <i class="ph-bold ph-signpost" style="font-size:16px; color:var(--blue-ink-600); flex-shrink:0;"></i>
+                    <div style="flex:1; min-width:0;"><div style="font-size:12px; color:var(--fg-muted);">Personal · decided Jun 11</div><div style="font-size:14px; color:var(--fg);">Say yes to the board seat, or protect my time entirely?</div></div>
+                    <span style="flex-shrink:0; font-size:11.5px; color:var(--fg-muted);">Declined</span>
+                  </div>
+                </div>
+                <div class="muted" style="font-size:12.5px; margin-top:12px; display:flex; align-items:center; gap:6px;"><i class="ph ph-arrow-u-up-left" style="font-size:13px;"></i>In each, a reversible middle option went unlogged. Expect to be asked for this one's.</div>
+              </div>
+
+              <!-- AI recommendation -->
+              <div style="border:1px solid var(--blue-ink-200); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--blue-ink-950); color:#fff;">
+                  <i class="ph-fill ph-sparkle" style="font-size:16px; color:var(--blue-ink-200);"></i>
+                  <span style="font-size:13px; font-weight:500;">AI recommendation</span>
+                  <span style="margin-left:auto; font-size:11.5px; color:var(--blue-ink-100);">Drawn from your pattern history</span>
+                </div>
+                <div style="padding:16px 18px; background:var(--card);">
+                  <p style="font-family:var(--font-serif); font-size:19px; line-height:1.45; color:var(--fg); margin-bottom:10px;">Lean toward School B — but name the middle option before you commit.</p>
+                  <div class="muted" style="margin-bottom:14px;">Your either/or history predicts you'll dismiss a reversible third path. Here that's likely a defer-a-year, negotiate-aid, or transfer route. Write it down so it's a real option, not the blind spot it was the last three times.</div>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <span class="di-chip"><i class="ph ph-gauge" style="font-size:14px; color:var(--blue-ink-600);"></i>Confidence: moderate</span>
+                    <span class="di-chip"><i class="ph ph-scales" style="font-size:14px; color:var(--blue-ink-600);"></i>Based on 3 prior either/or decisions</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="muted" style="font-size:12.5px; margin-bottom:16px; display:flex; align-items:center; gap:6px;"><i class="ph ph-warning-diamond" style="font-size:14px; color:var(--warning);"></i>A recommendation isn't a verdict — the pattern behind it is exactly what you should pressure-test.</div>
+
+              <!-- Stance selector -->
+              <div style="margin-bottom:24px;">
+                <div style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#B8D14A; margin-bottom:8px;">Stance</div>
+                <div style="font-size:15px; font-weight:500; color:#F5F1E8; margin-bottom:3px;">How hard should Blindspot push back?</div>
+                <div style="font-size:12.5px; color:#8E80A0; margin-bottom:16px;">Set the stance for this session. You can change it any time.</div>
+                <div style="display:flex; gap:10px;">
+                  <sc-for list="{{ stanceOptions }}" as="s" hint-placeholder-count="3">
+                    <button type="button" class="{{ s.className }}" onClick="{{ s.onClick }}">
+                      <span class="di-stance-icon"><i class="ph {{ s.icon }}" style="font-size:17px;"></i></span>
+                      <span style="display:flex; align-items:center; gap:6px; margin-top:2px;"><span style="font-size:14px; font-weight:600; color:#F5F1E8;">{{ s.label }}</span><span style="margin-left:auto; font-size:10.5px; letter-spacing:0.04em; color:#8E80A0; background:rgba(255,255,255,0.07); padding:2px 8px; border-radius:9999px;">{{ s.count }}</span></span>
+                      <span style="font-size:12px; line-height:17px; color:#8E80A0;">{{ s.desc }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:18px;">
+                <button class="di-btn" onClick="{{ onBegin }}">Interrogate it anyway<i class="ph-bold ph-arrow-right di-btn-ico"></i></button>
+                <button class="di-linkbtn" onClick="{{ onSaveDraft }}"><i class="ph ph-check" style="font-size:15px;"></i>Accept recommendation</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- QUESTION / CHALLENGE -->
+          <sc-if value="{{ isInterrogate }}" hint-placeholder-val="{{ true }}">
+            <div key="{{ node.id }}" style="animation:di-enter 300ms var(--ease-out);">
+
+              <!-- header: numeral / marker + eyebrow -->
+              <div style="display:flex; align-items:center; gap:18px; margin-bottom:26px;">
+                <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-family:var(--font-serif); font-size:52px; line-height:1; color:var(--blue-ink-200); animation:di-numin 400ms var(--ease-out); flex-shrink:0;">{{ node.numDisplay }}</div>
+                </sc-if>
+                <sc-if value="{{ node.isChallenge }}" hint-placeholder-val="{{ false }}">
+                  <div style="width:52px; height:52px; border-radius:var(--radius-md); background:{{ node.chalIconBg }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="{{ node.chalIcon }}" style="font-size:26px; color:{{ node.chalIconColor }};"></i></div>
+                </sc-if>
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; letter-spacing:0.03em; color:{{ node.eyebrowColor }};">{{ node.eyebrow }}</span>
+                  </div>
+                  <div style="width:36px; height:2px; background:{{ node.eyebrowColor }}; opacity:0.35; margin-top:8px;"></div>
+                </div>
+                <div style="margin-left:auto; display:flex; align-items:center; gap:7px;">
+                  <span class="muted" style="font-size:12px;">Blindspot is your</span>
+                  <span style="display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 12px; border-radius:9999px; background:var(--blue-ink-50); color:var(--blue-ink-800); font-size:12.5px; font-weight:500;"><i class="ph-fill ph-user-focus" style="font-size:13px; color:var(--blue-ink-600);"></i>{{ stanceLabel }}</span>
+                </div>
+              </div>
+
+              <!-- echo of prior answer (challenge only) -->
+              <sc-if value="{{ node.hasEcho }}" hint-placeholder-val="{{ false }}">
+                <div style="border-left:2px solid var(--border); padding:2px 0 2px 16px; margin-bottom:24px;">
+                  <div class="muted" style="margin-bottom:6px; font-size:12px;">A moment ago you said</div>
+                  <div style="font-style:italic; color:var(--fg-muted); font-size:15px; line-height:24px;">{{ node.echoText }}</div>
+                </div>
+              </sc-if>
+
+              <!-- system question text -->
+              <p style="font-family:var(--font-serif); font-size:27px; line-height:1.45; color:var(--fg); white-space:pre-line; letter-spacing:-0.01em;">{{ node.system }}</p>
+
+              <!-- profile reference -->
+              <sc-if value="{{ node.hasProfile }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; gap:8px; margin-top:16px; padding:9px 13px; background:var(--blue-ink-50); border-radius:var(--radius-md); width:fit-content; color:var(--blue-ink-800);">
+                  <i class="ph ph-user-focus" style="font-size:15px;"></i>
+                  <span style="font-size:13px;">{{ node.profile }}</span>
+                </div>
+              </sc-if>
+
+              <!-- answer -->
+              <div style="margin-top:32px;">
+                <textarea class="di-input" rows="5" placeholder="{{ node.placeholder }}" value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}"></textarea>
+
+                <!-- soft prompt -->
+                <sc-if value="{{ hasSoft }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:12px 14px; background:rgba(146,96,10,0.09); border-radius:var(--radius-md);">
+                    <i class="ph-fill ph-warning-circle" style="font-size:17px; color:var(--warning); margin-top:1px;"></i>
+                    <div style="font-size:14px; line-height:22px; color:#6b470a;">{{ soft }}</div>
+                  </div>
+                </sc-if>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; gap:16px;">
+                  <sc-if value="{{ node.hasSample }}" hint-placeholder-val="{{ false }}">
+                    <button class="di-linkbtn" onClick="{{ onInsertSample }}"><i class="ph ph-magic-wand" style="font-size:15px;"></i>Insert a sample response</button>
+                  </sc-if>
+                  <div style="margin-left:auto;">
+                    <button class="di-btn" onClick="{{ onContinue }}">{{ node.continueLabel }}<i class="ph-bold di-btn-ico {{ node.continueIcon }}"></i></button>
+                  </div>
+                </div>
+                <div class="muted" style="font-size:12px; margin-top:12px; text-align:right;">Press Return to continue · Shift + Return for a new line</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- SUMMARY -->
+          <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:di-enter 340ms var(--ease-out);">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; color:var(--success);">
+                <i class="ph-fill ph-check-circle" style="font-size:18px;"></i>
+                <span style="font-size:13px; letter-spacing:0.03em;">Reasoning is defensible</span>
+              </div>
+              <h2 style="margin-bottom:12px;">Decision summary</h2>
+              <div style="width:110px; height:2px; background:linear-gradient(90deg, var(--blue-ink-600), transparent); margin-bottom:16px;"></div>
+              <p class="muted" style="margin-bottom:28px;">A record of what you articulated. Return to it when the outcome plays out.</p>
+
+              <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+                <!-- name -->
+                <div style="padding:22px 24px; border-bottom:1px solid var(--border);">
+                  <div class="muted" style="font-size:12px; margin-bottom:6px;">Decision</div>
+                  <div style="font-family:var(--font-serif); font-size:22px; line-height:1.35; color:var(--fg);">{{ summary.name }}</div>
+                </div>
+
+                <!-- options -->
+                <div style="padding:22px 24px; border-bottom:1px solid var(--border);">
+                  <div class="muted" style="font-size:12px; margin-bottom:14px;">Options considered</div>
+                  <div style="display:flex; flex-direction:column; gap:12px;">
+                    <sc-for list="{{ summary.options }}" as="opt" hint-placeholder-count="2">
+                      <div style="border:1px solid {{ opt.borderColor }}; border-radius:var(--radius-md); padding:14px 16px; background:{{ opt.bg }};">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                          <span style="font-family:var(--font-serif); font-size:17px; color:var(--fg);">{{ opt.name }}</span>
+                          <sc-if value="{{ opt.chosen }}" hint-placeholder-val="{{ false }}">
+                            <span style="display:inline-flex; align-items:center; gap:5px; height:22px; padding:0 10px; border-radius:9999px; background:var(--success); color:#fff; font-size:12px;"><i class="ph-fill ph-check" style="font-size:11px;"></i>Chosen</span>
+                          </sc-if>
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:7px;">
+                          <sc-for list="{{ opt.attrs }}" as="attr" hint-placeholder-count="3">
+                            <span style="font-size:12px; color:var(--fg-muted); background:var(--muted); border-radius:9999px; padding:4px 11px;">{{ attr }}</span>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <!-- key factors -->
+                <div style="padding:22px 24px; border-bottom:1px solid var(--border);">
+                  <div class="muted" style="font-size:12px; margin-bottom:14px;">Key factors</div>
+                  <div style="display:flex; flex-direction:column; gap:12px;">
+                    <sc-for list="{{ summary.factors }}" as="f" hint-placeholder-count="3">
+                      <div style="display:flex; gap:11px; align-items:flex-start;">
+                        <i class="ph-fill ph-circle" style="font-size:7px; color:var(--blue-ink-600); margin-top:9px;"></i>
+                        <span style="font-size:15px; line-height:24px; color:var(--fg);">{{ f }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <!-- tradeoffs -->
+                <div style="padding:22px 24px; border-bottom:1px solid var(--border);">
+                  <div class="muted" style="font-size:12px; margin-bottom:14px;">Tradeoffs acknowledged</div>
+                  <div style="display:flex; flex-direction:column; gap:12px;">
+                    <sc-for list="{{ summary.tradeoffs }}" as="t" hint-placeholder-count="3">
+                      <div style="display:flex; gap:11px; align-items:flex-start;">
+                        <i class="ph ph-scales" style="font-size:17px; color:var(--warning); margin-top:2px;"></i>
+                        <span style="font-size:15px; line-height:24px; color:var(--fg);">{{ t }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <!-- position -->
+                <div style="padding:22px 24px;">
+                  <div class="muted" style="font-size:12px; margin-bottom:12px;">The position you'll defend</div>
+                  <blockquote style="border-left:2px solid var(--blue-ink-600);">{{ summary.position }}</blockquote>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;">
+                    <sc-for list="{{ summary.meta }}" as="m" hint-placeholder-count="3">
+                      <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--blue-ink-800); background:var(--blue-ink-50); border-radius:9999px; padding:5px 11px;"><i class="ph ph-seal-check" style="font-size:13px;"></i>{{ m }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:16px; margin-top:24px;">
+                <button class="di-btn" onClick="{{ onSaveDraft }}"><i class="ph-bold ph-check di-btn-ico"></i>Log this decision</button>
+                <button class="di-linkbtn" onClick="{{ onRestart }}"><i class="ph ph-arrow-counter-clockwise" style="font-size:15px;"></i>Run the session again</button>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </main>
+
+      <!-- Ledger -->
+      <aside style="width:340px; flex-shrink:0; border-left:1px solid var(--border); background:var(--bg); padding:32px 28px; overflow-y:auto;" class="di-scroll">
+        <div style="font-size:12px; letter-spacing:0.04em; color:var(--fg-muted); margin-bottom:10px;">Reasoning ledger</div>
+        <div style="font-family:var(--font-serif); font-size:19px; line-height:1.3; color:var(--fg); margin-bottom:8px;">Toward a defensible position</div>
+        <p class="muted" style="margin-bottom:18px;">The session closes when every load-bearing claim holds, not when you have written enough.</p>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--border);">
+          <span style="font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--fg);">{{ establishedCount }} / {{ ledgerTotal }}</span>
+          <span class="muted" style="font-size:13px;">claims established</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column;">
+          <sc-for list="{{ ledger }}" as="item" hint-placeholder-count="6">
+            <div style="display:flex; align-items:stretch;">
+              <div style="position:relative; width:26px; flex-shrink:0; display:flex; justify-content:center;">
+                <sc-if value="{{ item.showLine }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute; top:22px; bottom:0; left:50%; transform:translateX(-50%); width:2px; background:{{ item.lineColor }};"></div>
+                </sc-if>
+                <div style="position:relative; z-index:1; width:22px; height:22px; display:flex; align-items:center; justify-content:center; background:var(--bg); border-radius:9999px;">
+                  <i class="{{ item.iconClass }}" style="{{ item.iconStyle }}"></i>
+                </div>
+              </div>
+              <div style="{{ item.contentStyle }}">
+                <div style="{{ item.labelStyle }}">{{ item.label }}</div>
+                <sc-if value="{{ item.hasCapture }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; line-height:18px; color:var(--fg-muted); margin-top:5px; font-style:italic;">{{ item.capture }}</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px; padding:16px; border:1px solid var(--success); border-radius:var(--radius-lg); background:rgba(26,122,58,0.06); display:flex; align-items:center; gap:12px;">
+            <i class="ph-fill ph-seal-check" style="font-size:24px; color:var(--success);"></i>
+            <div>
+              <div style="font-size:14px; color:var(--fg); font-weight:500;">Position defensible</div>
+              <div class="muted" style="font-size:12px;">Summary generated from your reasoning.</div>
+            </div>
+          </div>
+        </sc-if>
+      </aside>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820},&quot;challengeEnabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interrogation behavior&quot;},&quot;enforceDepth&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interrogation behavior&quot;},&quot;minWords&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:4,&quot;max&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Interrogation behavior&quot;},&quot;showLedgerCaptures&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interrogation behavior&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const saved = this.load();
+    this.state = saved || { mode: 'intro', step: 0, answers: {}, draft: '', soft: null };
+  }
+
+  // ---- nodes (the interrogation script) ----
+  nodes() {
+    const stance = (this.state && this.state.stance) || 'advisor';
+    const all = [
+      {
+        id: 'objective', ledgerLabel: "What you're optimizing for", type: 'question', stances: ['advisor', 'supporter', 'critic'],
+        system: "Three years after you graduate, what is the single outcome this choice is meant to produce? Name the outcome. Not \u201cthe best option,\u201d the actual thing you want to be true.",
+        placeholder: 'Write the one outcome that matters most\u2026',
+        sample: "I want the widest set of doors open three years out, specifically the option to work at a top national firm or take a federal clerkship, even though I'm not certain yet that I want either of them."
+      },
+      {
+        id: 'network', ledgerLabel: 'Why the stated advantage matters', type: 'question', stances: ['advisor', 'supporter', 'critic'],
+        profile: 'From your profile: mentorship ranked #1, lifestyle above compensation.',
+        system: "You logged School A\u2019s advantage as \u201ca better network.\u201d Be concrete: what does that network get you that School B\u2019s regional network does not?",
+        placeholder: 'Name what the network actually delivers\u2026',
+        sample: "School A feeds straight into the national firms and federal clerkships. School B mostly places into the regional market: strong jobs, but a lower ceiling and far fewer national exits."
+      },
+      {
+        id: 'challenge', ledgerLabel: 'Whether it survives challenge', type: 'challenge', stances: ['advisor', 'supporter', 'critic'],
+        eyebrow: 'Pushback', contests: 'network',
+        system: "Look at the shape of that reasoning. \u201cThe network gets me top firms\u201d and \u201cI want School A for its network\u201d are the same claim wearing two coats: the network is defined by those firms, and those firms are the reason the network matters. That is a loop, not a reason.\n\nA counter-consideration. You said you want to practice in the Southeast, and you ranked lifestyle above compensation. School B places 92% into exactly that market. A national network you don\u2019t intend to use is not an asset you are buying. It is one you are paying for.\n\nSo answer the harder version: what does School A\u2019s network do for the life you actually said you want?",
+        placeholder: 'Answer the harder version\u2026',
+        sample: "Honestly, less than I implied. What I actually want it for is option value: if I change my mind about the Southeast, School A keeps the national door open. That optionality is the thing I'm paying for, not the network itself."
+      },
+      {
+        id: 'price', ledgerLabel: 'The price, named', type: 'question', stances: ['advisor', 'supporter', 'critic'],
+        system: "Then let\u2019s price it. School B closes a $150,000 gap, about $1,600 a month for ten years. Finish this sentence with something you\u2019d still defend in five years: \u201cPaying that $150,000 is worth it because ____.\u201d",
+        placeholder: 'Paying that $150,000 is worth it because\u2026',
+        sample: "\u2026option value is only worth the premium if I actually use it, and I can't yet name a single concrete scenario where I would. Which means right now I'd be paying $150,000 for a feeling of safety, not a plan."
+      },
+      {
+        id: 'price-challenge', ledgerLabel: 'Whether the price holds', type: 'challenge', stances: ['critic'],
+        eyebrow: 'Pushback', contests: 'price',
+        system: "I\u2019m not letting that sit. You just called the premium a \u201cfeeling of safety\u201d \u2014 but you\u2019re still leaving School A on the table. If the optionality is genuinely worthless to the life you named, there is no decision here.\n\nSo commit: name one concrete, plausible future in the next five years where paying the $150,000 pays off. If you can\u2019t, say that plainly.",
+        placeholder: 'Name the scenario \u2014 or admit there isn\u2019t one\u2026',
+        sample: "I can\u2019t name one that survives scrutiny. The honest answer is there isn\u2019t a concrete scenario \u2014 which means the premium buys reassurance, not options."
+      },
+      {
+        id: 'revealed', ledgerLabel: 'Stated vs. revealed preference', type: 'question', stances: ['advisor', 'critic'],
+        system: "One more angle. It\u2019s decided, and you\u2019ve just told a close friend where you\u2019re going. In the version where you pick School A, what is the first feeling: relief, or the need to justify it? Be honest about which one shows up first.",
+        placeholder: 'Name the first feeling, honestly\u2026',
+        sample: "If I'm honest, the first thing is relief that I won't have to explain choosing the \u201clesser\u201d school. That's status talking, not strategy, and it's the exact trap I told you I wanted to avoid."
+      },
+      {
+        id: 'position', ledgerLabel: "The position you'll defend", type: 'question', stances: ['advisor', 'supporter', 'critic'],
+        system: "Now state your position in one or two sentences, the version you\u2019d stand behind whichever way it lands. This becomes the record.",
+        placeholder: 'State the position you\u2019ll stand behind\u2026',
+        sample: "I'm choosing School B. The scholarship removes real constraint, the program fits where I actually intend to practice, and the only thing A offered that B doesn't is optionality I can't concretely justify paying $150,000 for. If I later need a national move, I'll earn it on performance."
+      }
+    ];
+    const challengeOn = this.props.challengeEnabled ?? true;
+    return all.filter(function (n) {
+      if (n.stances && n.stances.indexOf(stance) === -1) return false;
+      if (!challengeOn && n.type === 'challenge') return false;
+      return true;
+    });
+  }
+
+  // ---- persistence ----
+  load() {
+    try {
+      const raw = localStorage.getItem('di-session-v2');
+      if (!raw) return null;
+      const p = JSON.parse(raw);
+      if (!p || typeof p !== 'object') return null;
+      return { mode: p.mode || 'intro', step: p.step || 0, answers: p.answers || {}, draft: p.draft || '', soft: null };
+    } catch (e) { return null; }
+  }
+  save(next) {
+    try {
+      localStorage.setItem('di-session-v2', JSON.stringify({ mode: next.mode, step: next.step, answers: next.answers, draft: next.draft }));
+    } catch (e) {}
+  }
+  set(patch) {
+    this.setState(function (s) {
+      return Object.assign({}, s, patch);
+    }, function () { this.save(this.state); }.bind(this));
+  }
+
+  // ---- depth guard ----
+  checkDepth(text) {
+    const t = (text || '').trim();
+    if (!t) return 'empty';
+    if (!(this.props.enforceDepth ?? true)) return 'ok';
+    const shallow = /^(i\s*don'?t\s*know|idk|dunno|not sure|maybe|no idea|unsure|a?\s*gut feeling|just a gut feeling|it just feels? right|because it'?s better|it just is|prestige|because prestige|it'?s the best)\.?$/i;
+    if (shallow.test(t)) return 'shallow';
+    const minWords = this.props.minWords ?? 12;
+    const words = t.split(/\s+/).filter(Boolean).length;
+    if (t.length < 60 || words < minWords) return 'thin';
+    return 'ok';
+  }
+  softMessage(kind, text) {
+    if (kind === 'shallow') return "\u201c" + (text || '').trim() + "\u201d is a conclusion, not a reason. I\u2019m not going to pass that through. What\u2019s underneath it? What would you point to if someone asked you to defend it?";
+    if (kind === 'thin') return "That\u2019s thinner than this decision deserves. Give me the \u201cbecause.\u201d The reasoning, not the headline.";
+    return "Nothing to work with yet. Take a real swing at it before we move on.";
+  }
+
+  // ---- handlers ----
+  onBegin() { this.set({ mode: 'interrogate', step: 0, draft: '', soft: null }); }
+  setStance(s) { this.set({ stance: s }); }
+  countFor(stance) {
+    const saved = this.state; const prev = saved.stance;
+    this.state.stance = stance; const n = this.nodes().length; this.state.stance = prev;
+    return n;
+  }
+  onDraft(e) { const v = e.target.value; this.setState({ draft: v, soft: null }); }
+  onKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.onContinue(); }
+  }
+  onInsertSample() {
+    const nodes = this.nodes();
+    const node = nodes[this.state.step];
+    this.set({ draft: node ? node.sample : '', soft: null });
+  }
+  onContinue() {
+    const nodes = this.nodes();
+    const node = nodes[this.state.step];
+    if (!node) return;
+    const kind = this.checkDepth(this.state.draft);
+    if (kind !== 'ok') { this.setState({ soft: this.softMessage(kind, this.state.draft) }); return; }
+    const answers = Object.assign({}, this.state.answers);
+    answers[node.id] = this.state.draft.trim();
+    const nextStep = this.state.step + 1;
+    if (nextStep >= nodes.length) {
+      this.set({ answers: answers, mode: 'summary', draft: '', soft: null });
+    } else {
+      this.set({ answers: answers, step: nextStep, draft: '', soft: null });
+    }
+  }
+  onSaveDraft() {
+    this.save(this.state);
+    this.setState({ savedFlash: true });
+    clearTimeout(this._flash);
+    this._flash = setTimeout(function () { this.setState({ savedFlash: false }); }.bind(this), 1800);
+  }
+  onRestart() {
+    try { localStorage.removeItem('di-session-v2'); } catch (e) {}
+    this.setState({ mode: 'intro', step: 0, answers: {}, draft: '', soft: null, savedFlash: false });
+  }
+
+  truncate(s, n) {
+    s = (s || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n).trim() + '\u2026' : s;
+  }
+  pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  renderVals() {
+    const nodes = this.nodes();
+    const st = this.state;
+    const mode = st.mode;
+    const isInterrogate = mode === 'interrogate';
+    const cur = isInterrogate ? nodes[st.step] : null;
+    const answered = st.answers || {};
+    const totalQ = nodes.filter(function (n) { return n.type === 'question'; }).length;
+
+    // current node view model
+    const stance = st.stance || 'advisor';
+    const stanceCfg = {
+      advisor: { eyebrow: 'Pushback', icon: 'ph-fill ph-scales', iconBg: 'rgba(146,96,10,0.12)', iconColor: 'var(--warning)', color: 'var(--warning)', lead: '', continueLabel: 'Respond' },
+      supporter: { eyebrow: 'A gentle check', icon: 'ph-fill ph-hand-heart', iconBg: 'var(--blue-ink-50)', iconColor: 'var(--blue-ink-600)', color: 'var(--blue-ink-600)', lead: "You don\u2019t have to defend this \u2014 I\u2019m on your side. Just one thing worth gut-checking.\n\n", continueLabel: 'Respond' },
+      critic: { eyebrow: 'Cross-examination', icon: 'ph-fill ph-gavel', iconBg: 'rgba(197,48,48,0.12)', iconColor: 'var(--destructive)', color: 'var(--destructive)', lead: "I\u2019m going to argue the other side as hard as I can. Take it head-on.\n\n", continueLabel: 'Answer the challenge' }
+    }[stance] || {};
+    let node = { id: 'x', eyebrow: '', system: '', placeholder: '', hasProfile: false, profile: '', hasSample: false, sample: '', hasEcho: false, echoText: '', showNum: false, numDisplay: '', isChallenge: false, eyebrowColor: 'var(--blue-ink-600)', chalIcon: 'ph-fill ph-scales', chalIconBg: 'rgba(146,96,10,0.12)', chalIconColor: 'var(--warning)', continueLabel: 'Continue', continueIcon: 'ph-arrow-right' };
+    if (cur) {
+      const isChal = cur.type === 'challenge';
+      // question number among questions
+      let qNum = 0;
+      for (let i = 0; i <= st.step; i++) { if (nodes[i].type === 'question') qNum++; }
+      node = {
+        id: cur.id,
+        eyebrow: isChal ? stanceCfg.eyebrow : ('Question ' + qNum + ' of ' + totalQ),
+        system: isChal ? (stanceCfg.lead + cur.system) : cur.system,
+        placeholder: cur.placeholder,
+        hasProfile: !!cur.profile,
+        profile: cur.profile || '',
+        hasSample: !!cur.sample,
+        sample: cur.sample || '',
+        hasEcho: isChal && !!answered[cur.contests],
+        echoText: isChal ? (answered[cur.contests] || '') : '',
+        showNum: !isChal,
+        numDisplay: isChal ? '' : this.pad2(qNum),
+        isChallenge: isChal,
+        eyebrowColor: isChal ? stanceCfg.color : 'var(--blue-ink-600)',
+        chalIcon: stanceCfg.icon,
+        chalIconBg: stanceCfg.iconBg,
+        chalIconColor: stanceCfg.iconColor,
+        continueLabel: isChal ? stanceCfg.continueLabel : 'Continue',
+        continueIcon: isChal ? 'ph-arrow-bend-down-right' : 'ph-arrow-right'
+      };
+    }
+
+    // ledger with connective spine
+    const chalActive = isInterrogate && cur && cur.type === 'challenge';
+    const showCaptures = this.props.showLedgerCaptures ?? true;
+    const ledger = nodes.map(function (n, i) {
+      const isDone = !!answered[n.id];
+      let state;
+      if (mode === 'summary' || isDone) state = 'established';
+      else if (isInterrogate && i === st.step) state = 'active';
+      else state = 'pending';
+      if (chalActive && n.id === cur.contests) state = 'contested';
+
+      const conf = {
+        established: { icon: 'ph-fill ph-check-circle', color: 'var(--success)', label: 'var(--fg)' },
+        active: { icon: 'ph-fill ph-circle', color: 'var(--blue-ink-600)', label: 'var(--fg)' },
+        contested: { icon: 'ph-fill ph-warning-circle', color: 'var(--warning)', label: 'var(--fg)' },
+        pending: { icon: 'ph ph-circle', color: 'var(--paper-250)', label: 'var(--fg-muted)' }
+      }[state];
+
+      const contentBase = 'flex:1; min-width:0; padding:1px 12px 22px 12px; border-radius:var(--radius-md);';
+      const contentStyle = contentBase + (state === 'active' ? ' background:var(--blue-ink-50);' : (state === 'contested' ? ' background:rgba(146,96,10,0.08);' : ''));
+      const capture = (showCaptures && isDone && answered[n.id]) ? this.truncate(answered[n.id], 60) : '';
+
+      return {
+        label: n.ledgerLabel,
+        iconClass: conf.icon,
+        iconStyle: 'font-size:18px; color:' + conf.color + ';',
+        labelStyle: 'font-size:14px; line-height:19px; color:' + conf.label + ';' + (state === 'active' ? ' font-weight:500;' : ''),
+        contentStyle: contentStyle,
+        showLine: i < nodes.length - 1,
+        lineColor: isDone ? 'var(--success)' : 'var(--border)',
+        hasCapture: !!capture,
+        capture: capture
+      };
+    }.bind(this));
+
+    const establishedCount = nodes.filter(function (n) { return !!answered[n.id]; }).length;
+
+    const summary = {
+      name: 'Law school: School A (top-10, national) vs. School B (regional, full scholarship)',
+      options: [
+        { name: 'School A', chosen: false, borderColor: 'var(--border)', bg: 'var(--card)', attrs: ['Top-10, national', 'Prestige signal', 'National firm & clerkship network', 'Full sticker cost'] },
+        { name: 'School B', chosen: true, borderColor: 'var(--success)', bg: 'rgba(26,122,58,0.04)', attrs: ['Strong regional placement', 'Better-fit program', 'Full-tuition scholarship', '\u2212$150,000 debt'] }
+      ],
+      factors: [
+        'Intended market is the Southeast, where School B places 92% of graduates.',
+        'Program fit ranks above brand for the work Maya actually wants to do.',
+        'The $150,000 of avoided debt is concrete; School A\u2019s national-network premium is not.',
+        'Profile priorities (mentorship #1, lifestyle over compensation) point to B.'
+      ],
+      tradeoffs: [
+        'Gives up national optionality that could not be tied to a concrete future scenario.',
+        'Forgoes the prestige signal, named as status, not strategy.',
+        'Bets on the regional market; any future national move must be earned on performance.'
+      ],
+      position: answered['position'] || 'I\u2019m choosing School B. The scholarship removes real constraint, the program fits where I actually intend to practice, and the only thing A offered that B doesn\u2019t is optionality I can\u2019t concretely justify paying $150,000 for.',
+      meta: ['Circular reasoning flagged once', (nodes.length) + ' substantive exchanges', 'Profile-calibrated']
+    };
+
+    return {
+      isIntro: mode === 'intro',
+      isInterrogate: isInterrogate,
+      isSummary: mode === 'summary',
+      node: node,
+      draft: st.draft || '',
+      onDraft: this.onDraft.bind(this),
+      onKey: this.onKey.bind(this),
+      onContinue: this.onContinue.bind(this),
+      onInsertSample: this.onInsertSample.bind(this),
+      onBegin: this.onBegin.bind(this),
+      onRestart: this.onRestart.bind(this),
+      stance: stance,
+      stanceLabel: { advisor: 'Advisor', supporter: 'Supporter', critic: 'Critic' }[stance],
+      stanceOptions: [
+        { key: 'advisor', label: 'Advisor', icon: 'ph-scales', desc: 'Balanced. Challenges the one claim that matters most, lets the rest stand.' },
+        { key: 'supporter', label: 'Supporter', icon: 'ph-hand-heart', desc: 'Gentle. Affirms your thinking and nudges only where it\u2019s clearly thin.' },
+        { key: 'critic', label: 'Critic', icon: 'ph-gavel', desc: 'Adversarial. Argues the opposite of whatever you choose until it holds.' }
+      ].map(function (o) {
+        const on = o.key === stance;
+        return { label: o.label, icon: o.icon, desc: o.desc, on: on, count: this.countFor(o.key) + ' steps', className: 'di-stance' + (on ? ' on' : ''), onClick: this.setStance.bind(this, o.key) };
+      }.bind(this)),
+      onSetStance: this.setStance.bind(this),
+      onSaveDraft: this.onSaveDraft.bind(this),
+      saveLabel: st.savedFlash ? 'Draft saved' : 'Save draft',
+      hasSoft: !!st.soft,
+      soft: st.soft || '',
+      ledger: ledger,
+      establishedCount: establishedCount,
+      ledgerTotal: nodes.length,
+      summary: summary
+    };
+  }
+}
+</script>
+</body>
+</html>

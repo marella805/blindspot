@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "pm-market-research@pm-skills": true,
+    "pm-product-discovery@pm-skills": true,
+    "pm-execution@pm-skills": true
+  }
+}

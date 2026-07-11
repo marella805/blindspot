@@ -172,6 +172,8 @@ export default function App() {
         {screen === 'interrogation' ? (
           <DecisionInterrogation
             isFresh={isFresh}
+            patterns={data.patterns}
+            decisions={data.decisions}
             onComplete={() => setScreen('log')}
           />
         ) : (

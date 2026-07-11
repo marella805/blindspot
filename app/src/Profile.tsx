@@ -114,6 +114,99 @@ function emptyAnswers(): Answers {
   return { areas: [], struggles: [], risk: 0, pace: 0, triggers: [], push: 0, consult: [] }
 }
 
+type CoachingStyle = 'advisor' | 'supporter' | 'critic'
+
+const COACHING_STYLES: {
+  key: CoachingStyle; label: string; tagline: string; desc: string; icon: string
+  accent: string; activeBg: string; activeIconBg: string
+}[] = [
+  {
+    key: 'advisor',
+    label: 'Advisor',
+    tagline: 'Balanced analysis, no verdict',
+    desc: 'Lays out evidence and surfaces what you haven\'t considered. Doesn\'t tell you what to do — shows you what you\'re not seeing.',
+    icon: 'ph-scales',
+    accent: '#4E3D63',
+    activeBg: 'rgba(78,61,99,0.07)',
+    activeIconBg: 'rgba(78,61,99,0.14)',
+  },
+  {
+    key: 'supporter',
+    label: 'Supporter',
+    tagline: 'Builds your confidence',
+    desc: 'Validates your instincts and finds the logic in your direction. Still flags genuine gaps, but frames them as things you can handle.',
+    icon: 'ph-hand-fist',
+    accent: '#1A7A3A',
+    activeBg: 'rgba(26,122,58,0.07)',
+    activeIconBg: 'rgba(26,122,58,0.14)',
+  },
+  {
+    key: 'critic',
+    label: 'Critic',
+    tagline: 'Arguments until it holds',
+    desc: 'Steelmans the opposite of whatever you\'re leaning toward. Doesn\'t stop until your reasoning survives a real challenge.',
+    icon: 'ph-sword',
+    accent: '#C0392B',
+    activeBg: 'rgba(192,57,43,0.07)',
+    activeIconBg: 'rgba(192,57,43,0.14)',
+  },
+]
+
+function CoachingStylePicker({ value, onChange }: { value: CoachingStyle; onChange: (v: CoachingStyle) => void }) {
+  return (
+    <div>
+      <div style={{ fontSize: 12, letterSpacing: '0.03em', color: 'var(--fg-muted)', marginBottom: 14 }}>
+        HOW BLINDSPOT SHOWS UP
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {COACHING_STYLES.map(s => {
+          const on = value === s.key
+          return (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => onChange(s.key)}
+              style={{
+                textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: 14, padding: '15px 16px',
+                border: `1.5px solid ${on ? s.accent : 'var(--border)'}`,
+                borderRadius: 'var(--radius-lg)',
+                background: on ? s.activeBg : 'var(--card)',
+                cursor: 'pointer', transition: 'border-color 150ms, background 150ms',
+              }}
+            >
+              <span style={{
+                flexShrink: 0, width: 40, height: 40, borderRadius: 'var(--radius-md)',
+                background: on ? s.activeIconBg : 'var(--muted)',
+                color: on ? s.accent : 'var(--fg-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 150ms, color 150ms',
+              }}>
+                <i className={`ph ${s.icon}`} style={{ fontSize: 20 }} />
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 3 }}>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: on ? s.accent : 'var(--fg)' }}>{s.label}</span>
+                  <span style={{ fontSize: 12, color: 'var(--fg-muted)' }}>{s.tagline}</span>
+                </span>
+                <span style={{ display: 'block', fontSize: 13, lineHeight: '19px', color: 'var(--fg-muted)' }}>{s.desc}</span>
+              </span>
+              <span style={{
+                flexShrink: 0, width: 22, height: 22, borderRadius: 9999, marginTop: 2,
+                border: on ? 'none' : '1.5px solid var(--border)',
+                background: on ? s.accent : 'transparent',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 150ms',
+              }}>
+                {on && <i className="ph-bold ph-check" style={{ fontSize: 12, color: '#fff' }} />}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function isAnswered(q: Question, ans: Answers): boolean {
   if (q.kind === 'scale') return (ans[q.id as keyof Answers] as number) >= 1
   return ((ans[q.id as keyof Answers] as string[]).length) >= q.min
@@ -127,6 +220,7 @@ export function Profile({ data, isFresh }: Props) {
   const [mode, setMode] = useState<'questions' | 'summary' | 'view'>(isFresh ? 'questions' : 'view')
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Answers>(emptyAnswers())
+  const [coachingStyle, setCoachingStyle] = useState<CoachingStyle>('advisor')
 
   const q = QUESTIONS[step]
   const answered = isAnswered(q, answers)
@@ -410,6 +504,11 @@ export function Profile({ data, isFresh }: Props) {
             </div>
           </div>
 
+          {/* Coaching style */}
+          <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', background: 'var(--card)', padding: '18px 20px' }}>
+            <CoachingStylePicker value={coachingStyle} onChange={setCoachingStyle} />
+          </div>
+
           {/* Calibration note */}
           <div style={{ display: 'flex', gap: 13, alignItems: 'flex-start', padding: '16px 18px', border: '1px solid var(--blue-ink-100)', background: 'var(--blue-ink-50)', borderRadius: 'var(--radius-lg)' }}>
             <i className="ph-fill ph-sparkle" style={{ fontSize: 18, color: 'var(--blue-ink-600)', marginTop: 1 }} />
@@ -486,6 +585,12 @@ export function Profile({ data, isFresh }: Props) {
               ? 'Building signal. Each decision and reflection improves the pattern engine.'
               : 'Strong calibration. The interrogation is well-tuned to your decision patterns.'}
           </p>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-section">
+          <CoachingStylePicker value={coachingStyle} onChange={setCoachingStyle} />
         </div>
       </div>
 

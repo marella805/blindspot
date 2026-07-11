@@ -257,6 +257,18 @@ export const seasonedData: AppData = {
 
 // ── Interrogation sample responses ────────────────────────────────────────────
 
+export const seasonedSampleInterrogation = {
+  title: "Accept Figma PM internship vs. stay on honors thesis research track",
+  responses: [
+    "I want to be doing AI systems research at a top lab — not PM — within 4 years. The thesis is the direct path. Figma is adjacent to CogSci but it's a design tool company. I keep telling myself it's relevant but the honest answer is that it's a prestigious brand and I want the resume line.",
+    "My advisor wants me to stay — we have real momentum now that we switched directions. My parents are pushing for industry income after I turned down Stripe last summer. My roommate did a PM internship and says I'm overthinking it. I'm giving my parents' pressure more weight than I'd like to admit.",
+    "Strongest case against the thesis: I might finish the thesis and not get into a top PhD program anyway, in which case I'll have turned down two competitive internships for a piece of paper. Figma at least gives me an exit ramp into product if the research track doesn't pan out.",
+    "If I take Figma: the thesis either gets done in a compressed fall timeline — rushed, probably mediocre — or I defer to next year and risk my advisor moving on. If I stay research: I give up $18k and a PM credential that would help if I pivot. The money is real. The optionality is real.",
+    "I've been treating this as Figma-or-research when there's a third option I haven't actually tried: ask Figma for a deferred start or a part-time arrangement during the semester. I don't know if they'd say yes. I've been assuming no without asking. That's the thing I keep skipping past.",
+    "Negotiate with Figma first. If they'll defer to January or go part-time, I take it. If not, I stay on the research track — the thesis window is too tight and the advisor relationship is too important to blow up for a summer. I should have asked two weeks ago.",
+  ],
+}
+
 export const sampleInterrogation = {
   title: "Accept UC Berkeley offer vs. wait for NYU financial aid appeal",
   responses: [

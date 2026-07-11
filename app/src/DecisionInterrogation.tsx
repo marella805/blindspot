@@ -1,76 +1,241 @@
 import { useState, useRef, useEffect } from 'react'
-import { sampleInterrogation } from './data'
+import { sampleInterrogation, seasonedSampleInterrogation } from './data'
+import type { PatternAlert, DecisionEntry } from './types'
 
-interface Props {
-  isFresh: boolean
-  onComplete: () => void
-}
+type CoachingStyle = 'advisor' | 'supporter' | 'critic'
 
-const QUESTIONS = [
+const COACHING_STYLES: {
+  key: CoachingStyle; label: string; tagline: string; desc: string; icon: string
+  accent: string; activeBg: string; activeIconBg: string
+}[] = [
   {
-    eyebrow: 'Objective',
-    label: 'What you\'re optimizing for',
-    num: '01',
-    text: "Three years after you decide, what is the single outcome this choice is meant to produce? Name the outcome. Not \"the best option,\" the actual thing you want to be true.",
-    sample: sampleInterrogation.responses[0],
-    placeholder: "Be specific. What outcome matters most?",
+    key: 'advisor',
+    label: 'Advisor',
+    tagline: 'Balanced analysis, no verdict',
+    desc: 'Lays out evidence and surfaces what you haven\'t considered. Doesn\'t tell you what to do — shows you what you\'re not seeing.',
+    icon: 'ph-scales',
+    accent: '#4E3D63',
+    activeBg: 'rgba(78,61,99,0.07)',
+    activeIconBg: 'rgba(78,61,99,0.14)',
   },
   {
-    eyebrow: 'Network',
-    label: 'Why the stated advantage matters',
-    num: '02',
-    text: "You said one option has an advantage. Why does that advantage actually matter to the outcome you named? Don't restate the option — argue for why this specific edge connects to what you want.",
-    sample: sampleInterrogation.responses[1],
-    placeholder: "Name the people pulling on this. What does each one want?",
+    key: 'supporter',
+    label: 'Supporter',
+    tagline: 'Builds your confidence',
+    desc: 'Validates your instincts and finds the logic in your direction. Still flags genuine gaps, but frames them as things you can handle.',
+    icon: 'ph-hand-fist',
+    accent: '#1A7A3A',
+    activeBg: 'rgba(26,122,58,0.07)',
+    activeIconBg: 'rgba(26,122,58,0.14)',
   },
   {
-    eyebrow: 'Challenge',
-    label: 'Whether it survives challenge',
-    num: '03',
-    text: "Give me the best argument against the option you're leaning toward. Not a weak version — the one that actually gives you pause. If you can't name one, you're not thinking clearly yet.",
-    sample: sampleInterrogation.responses[2],
-    placeholder: "Steel-man the other side. What's the strongest case against your current lean?",
-  },
-  {
-    eyebrow: 'Price',
-    label: 'The price, named',
-    num: '04',
-    text: "One more angle. It's decided, and you've just told a close friend where you're going. In the version where you pick your current lean, what is the first feeling: relief, or the need to justify it? Be honest about the answer.",
-    sample: sampleInterrogation.responses[3],
-    placeholder: "If this goes badly, what does that actually look like in 2 years?",
-  },
-  {
-    eyebrow: 'Revealed',
-    label: 'Stated vs. revealed preference',
-    num: '05',
-    text: "What have you been skipping past? There's a fact, a fear, or a constraint you keep not logging. Name it now — the thing that's actually shaping this more than what you've written.",
-    sample: sampleInterrogation.responses[4],
-    placeholder: "The thing you know is relevant but haven't written down yet.",
-  },
-  {
-    eyebrow: 'Position',
-    label: 'The position you\'ll defend',
-    num: '06',
-    text: "State your decision plainly. One sentence. No hedging, no \"it depends.\" You can update the log later — but right now, what are you actually doing?",
-    sample: sampleInterrogation.responses[5],
-    placeholder: "Final answer. You can always update the log.",
+    key: 'critic',
+    label: 'Critic',
+    tagline: 'Arguments until it holds',
+    desc: 'Steelmans the opposite of whatever you\'re leaning toward. Doesn\'t stop until your reasoning survives a real challenge.',
+    icon: 'ph-sword',
+    accent: '#C0392B',
+    activeBg: 'rgba(192,57,43,0.07)',
+    activeIconBg: 'rgba(192,57,43,0.14)',
   },
 ]
 
-export function DecisionInterrogation({ isFresh, onComplete }: Props) {
-  const [phase, setPhase] = useState<'intro' | 'chat' | 'summary'>('intro')
-  const [title, setTitle] = useState(isFresh ? sampleInterrogation.title : '')
+type BlindspotRec = {
+  answer: string
+  rationale: string
+  evidence: { pattern: string; finding: string }[]
+}
+
+function buildBlindspotRec(
+  patterns: PatternAlert[],
+  decisions: DecisionEntry[],
+): BlindspotRec | null {
+  const active = patterns.filter(p => !p.dismissed)
+  if (active.length === 0) return null
+
+  const binary   = active.find(p => p.id === 'p2')
+  const career   = active.find(p => p.id === 'p1')
+  const external = active.find(p => p.id === 'p3')
+  const n = decisions.length
+
+  if (binary && external && career) {
+    return {
+      answer: 'Negotiate with Figma before you choose.',
+      rationale: 'Your log predicts you\'ll frame this as internship-or-thesis and pick the career signal. That\'s the wrong frame. The third option — deferred start or part-time — goes unasked in decisions like this. Ask first.',
+      evidence: [
+        {
+          pattern: `Binary framing · ${binary.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'You haven\'t asked Figma about a deferred or part-time arrangement. That\'s the middle path your pattern predicts you\'ll skip.',
+        },
+        {
+          pattern: `External validation · ${external.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Figma\'s brand is doing work here. You pick the option that reads best to your professional network, then write the alignment story afterward.',
+        },
+        {
+          pattern: `Career over alignment · ${career.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'If Figma says no to hybrid: stay on the thesis. The window with your advisor closes next year. The brand signal doesn\'t.',
+        },
+      ],
+    }
+  }
+
+  if (binary && external) {
+    return {
+      answer: 'There\'s a third option. Find it before you choose.',
+      rationale: `${binary.relatedDecisionIds.length} of ${n} decisions collapsed into A-vs-B when a middle path existed. Your log also shows you anchor to the option your network would validate. Name the hybrid before you pick.`,
+      evidence: [
+        {
+          pattern: `Binary framing · ${binary.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Negotiate, defer, go part-time — these paths consistently go unlogged. Name one first.',
+        },
+        {
+          pattern: `External validation · ${external.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Your initial lean is probably the one that reads better. Check whether that\'s doing the work here.',
+        },
+      ],
+    }
+  }
+
+  if (binary) {
+    return {
+      answer: 'Name the option that isn\'t on your list yet.',
+      rationale: `${binary.relatedDecisionIds.length} of ${n} decisions were framed A-vs-B when a middle path existed and went unexamined. Before you interrogate this one, name it.`,
+      evidence: [
+        {
+          pattern: `Binary framing · ${binary.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Negotiate, defer, hybrid — these go unlogged. Name one.',
+        },
+      ],
+    }
+  }
+
+  if (career && external) {
+    return {
+      answer: 'You\'re about to pick the better-looking option again.',
+      rationale: `Your last ${career.relatedDecisionIds.length} high-stakes decisions went to the stronger career signal. That may be right — but your log shows you decide for the external audience first, then write the reasoning afterward.`,
+      evidence: [
+        {
+          pattern: `Career over alignment · ${career.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Name what alignment costs you before you commit.',
+        },
+        {
+          pattern: `External validation · ${external.relatedDecisionIds.length} of ${n} decisions`,
+          finding: 'Write down what you\'d choose if no one in your professional network would ever know. Then compare.',
+        },
+      ],
+    }
+  }
+
+  return null
+}
+
+interface Props {
+  isFresh: boolean
+  patterns?: PatternAlert[]
+  decisions?: DecisionEntry[]
+  onComplete: () => void
+}
+
+function buildQuestions(responses: string[]) {
+  return [
+    {
+      eyebrow: 'Objective',
+      label: 'What you\'re optimizing for',
+      num: '01',
+      text: "Three years after you decide, what is the single outcome this choice is meant to produce? Name the outcome. Not \"the best option,\" the actual thing you want to be true.",
+      sample: responses[0],
+      placeholder: "Be specific. What outcome matters most?",
+    },
+    {
+      eyebrow: 'Network',
+      label: 'Why the stated advantage matters',
+      num: '02',
+      text: "You said one option has an advantage. Why does that advantage actually matter to the outcome you named? Don't restate the option — argue for why this specific edge connects to what you want.",
+      sample: responses[1],
+      placeholder: "Name the people pulling on this. What does each one want?",
+    },
+    {
+      eyebrow: 'Challenge',
+      label: 'Whether it survives challenge',
+      num: '03',
+      text: "Give me the best argument against the option you're leaning toward. Not a weak version — the one that actually gives you pause. If you can't name one, you're not thinking clearly yet.",
+      sample: responses[2],
+      placeholder: "Steel-man the other side. What's the strongest case against your current lean?",
+    },
+    {
+      eyebrow: 'Price',
+      label: 'The price, named',
+      num: '04',
+      text: "One more angle. It's decided, and you've just told a close friend where you're going. In the version where you pick your current lean, what is the first feeling: relief, or the need to justify it? Be honest about the answer.",
+      sample: responses[3],
+      placeholder: "If this goes badly, what does that actually look like in 2 years?",
+    },
+    {
+      eyebrow: 'Revealed',
+      label: 'Stated vs. revealed preference',
+      num: '05',
+      text: "What have you been skipping past? There's a fact, a fear, or a constraint you keep not logging. Name it now — the thing that's actually shaping this more than what you've written.",
+      sample: responses[4],
+      placeholder: "The thing you know is relevant but haven't written down yet.",
+    },
+    {
+      eyebrow: 'Position',
+      label: 'The position you\'ll defend',
+      num: '06',
+      text: "State your decision plainly. One sentence. No hedging, no \"it depends.\" You can update the log later — but right now, what are you actually doing?",
+      sample: responses[5],
+      placeholder: "Final answer. You can always update the log.",
+    },
+  ]
+}
+
+export function DecisionInterrogation({ isFresh, patterns = [], decisions = [], onComplete }: Props) {
+  const [phase, setPhase] = useState<'intro' | 'recommendation' | 'style' | 'chat' | 'summary'>('intro')
+  const sample = isFresh ? sampleInterrogation : seasonedSampleInterrogation
+  const QUESTIONS = buildQuestions(sample.responses)
+  const [title, setTitle] = useState(sample.title)
+  const [coachingStyle, setCoachingStyle] = useState<CoachingStyle>('advisor')
   const [answers, setAnswers] = useState<string[]>([])
   const [input, setInput] = useState('')
   const [qIndex, setQIndex] = useState(0)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const activePatterns = patterns.filter(p => !p.dismissed)
+  const binaryPattern = activePatterns.find(p => p.id === 'p2')
+  const externalPattern = activePatterns.find(p => p.id === 'p3')
+  const preWarning = binaryPattern
+    ? {
+        icon: 'ph-fork-knife',
+        label: 'Pattern watch',
+        headline: binaryPattern.title,
+        body: `In ${binaryPattern.relatedDecisionIds.length} of your logged decisions, a middle option went unexamined. Before you name options below — is there a third path you're about to skip?`,
+      }
+    : externalPattern
+    ? {
+        icon: 'ph-eye',
+        label: 'Pattern watch',
+        headline: externalPattern.title,
+        body: `Your log shows you often anchor to the option your professional network would validate. Try naming your preferred option without that audience in your head first.`,
+      }
+    : null
+
   useEffect(() => {
     textareaRef.current?.focus()
   }, [qIndex])
 
+  const blindspotRec = buildBlindspotRec(patterns, decisions)
+
   function begin() {
     if (!title.trim()) return
+    setPhase('style')
+  }
+
+  function handleBegin() {
+    if (blindspotRec) setPhase('recommendation')
+    else startChat()
+  }
+
+  function startChat() {
     setPhase('chat')
     setQIndex(0)
     setAnswers([])
@@ -109,11 +274,44 @@ export function DecisionInterrogation({ isFresh, onComplete }: Props) {
             This is not a pros and cons list. You will be asked to justify your reasoning, and it will be pushed on wherever it is weak. The session ends when your position holds — not when you have typed enough.
           </p>
 
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const, marginBottom: 36 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const, marginBottom: 32 }}>
             <span className="chip"><i className="ph ph-list-numbers" style={{ fontSize: 15, color: 'var(--blue-ink-600)' }} />6 structured questions</span>
             <span className="chip"><i className="ph ph-warning-diamond" style={{ fontSize: 15, color: 'var(--warning)' }} />Real pushback</span>
             <span className="chip"><i className="ph ph-user-focus" style={{ fontSize: 15, color: 'var(--blue-ink-600)' }} />Calibrated to your profile</span>
           </div>
+
+          {/* Pre-interrogation Blindspot recommendation (seasoned users with active patterns) */}
+          {preWarning && (
+            <div style={{
+              border: '1px solid rgba(78,61,99,0.25)',
+              borderRadius: 'var(--radius-lg)',
+              background: 'rgba(78,61,99,0.05)',
+              padding: '16px 18px',
+              marginBottom: 28,
+              display: 'flex',
+              gap: 13,
+              alignItems: 'flex-start',
+            }}>
+              <div style={{
+                flexShrink: 0, width: 36, height: 36, borderRadius: 'var(--radius-md)',
+                background: 'var(--blue-ink-500)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <i className="ph-fill ph-sparkle" style={{ fontSize: 16 }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--blue-ink-600)', marginBottom: 5 }}>
+                  {preWarning.label}
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--fg)', marginBottom: 5 }}>
+                  {preWarning.headline}
+                </div>
+                <div style={{ fontSize: 13.5, lineHeight: '21px', color: 'var(--fg-muted)' }}>
+                  {preWarning.body}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="field" style={{ marginBottom: 10 }}>
             <label>What are you deciding?</label>
@@ -121,22 +319,194 @@ export function DecisionInterrogation({ isFresh, onComplete }: Props) {
               value={title}
               onChange={e => setTitle(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && begin()}
-              placeholder="e.g. Accept the Berkeley offer vs wait for NYU"
+              placeholder="e.g. Accept the Figma internship vs. stay on thesis"
               autoFocus
               style={{ fontSize: 16 }}
             />
           </div>
 
-          {isFresh && (
-            <p className="muted" style={{ fontSize: 13, marginBottom: 24 }}>
-              <i className="ph ph-sparkle" style={{ fontSize: 13, marginRight: 5, color: 'var(--blue-ink-600)' }} />
-              Sample decision pre-filled for the demo. You can edit it or use your own.
-            </p>
-          )}
+          <p className="muted" style={{ fontSize: 13, marginBottom: 24 }}>
+            <i className="ph ph-sparkle" style={{ fontSize: 13, marginRight: 5, color: 'var(--blue-ink-600)' }} />
+            Sample decision pre-filled for the demo. Edit it or use your own.
+          </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginTop: 14 }}>
             <button className="btn-lime" onClick={begin} disabled={!title.trim()}>
-              Interrogate it<i className="ph-bold ph-arrow-right" />
+              Next<i className="ph-bold ph-arrow-right" />
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Blindspot recommendation ──────────────────────────────────────────────
+  if (phase === 'recommendation' && blindspotRec) {
+    return (
+      <div className="content">
+        <div className="content-inner animate-enter">
+
+          <div style={{ fontSize: 13, color: 'var(--blue-ink-600)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 7 }}>
+            <i className="ph-fill ph-circle" style={{ fontSize: 8 }} />
+            {title}
+          </div>
+
+          {/* Dark recommendation card */}
+          <div style={{
+            background: 'linear-gradient(165deg, #2C2239 0%, #17111F 60%, #120C19 100%)',
+            borderRadius: 14,
+            padding: '26px 28px',
+            marginBottom: 28,
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <i className="ph-fill ph-eye-slash" style={{
+              position: 'absolute', right: -20, bottom: -30,
+              fontSize: 160, color: 'rgba(184,209,74,0.06)',
+              lineHeight: 1, pointerEvents: 'none',
+            }} />
+            <div style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  height: 22, padding: '0 10px', borderRadius: 9999,
+                  background: 'rgba(184,209,74,0.15)', border: '1px solid rgba(184,209,74,0.3)',
+                  fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+                  color: '#B8D14A',
+                }}>
+                  <i className="ph-fill ph-sparkle" style={{ fontSize: 11 }} />
+                  Blindspot recommendation
+                </span>
+              </div>
+
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 30, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#F5F1E8', marginBottom: 14 }}>
+                {blindspotRec.answer}
+              </div>
+
+              <p style={{ fontSize: 14, lineHeight: '22px', color: '#CBBFD6', marginBottom: 20 }}>
+                {blindspotRec.rationale}
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
+                {blindspotRec.evidence.map((e, i) => (
+                  <div key={i} style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 10,
+                    padding: '12px 14px',
+                  }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', color: '#B8D14A', marginBottom: 5 }}>
+                      {e.pattern}
+                    </div>
+                    <div style={{ fontSize: 13.5, lineHeight: '20px', color: '#CBBFD6' }}>
+                      {e.finding}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Accept or interrogate */}
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
+            <button
+              className="btn-lime"
+              onClick={onComplete}
+              style={{ fontSize: 15, justifyContent: 'center' }}
+            >
+              <i className="ph-bold ph-check" style={{ fontSize: 15 }} />
+              Accept recommendation
+            </button>
+            <button
+              onClick={startChat}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                height: 48, borderRadius: 'var(--radius-lg)',
+                border: '1.5px solid var(--border)', background: 'var(--card)',
+                fontSize: 15, color: 'var(--fg)', cursor: 'pointer',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              Interrogate anyway
+              <i className="ph-bold ph-arrow-right" style={{ fontSize: 14 }} />
+            </button>
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+
+  // ── Style picker ──────────────────────────────────────────────────────────
+  if (phase === 'style') {
+    return (
+      <div className="content">
+        <div className="content-inner animate-enter">
+          <div style={{ fontSize: 13, color: 'var(--blue-ink-600)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 7 }}>
+            <i className="ph-fill ph-circle" style={{ fontSize: 8 }} />
+            {title}
+          </div>
+          <h2 style={{ marginBottom: 8 }}>How should Blindspot show up?</h2>
+          <p className="muted" style={{ marginBottom: 28 }}>
+            This affects how questions are framed and how hard the pushback lands. You can change it next time.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12, marginBottom: 32 }}>
+            {COACHING_STYLES.map(s => {
+              const on = coachingStyle === s.key
+              return (
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() => setCoachingStyle(s.key)}
+                  style={{
+                    textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: 16, padding: '18px 20px',
+                    border: `1.5px solid ${on ? s.accent : 'var(--border)'}`,
+                    borderRadius: 'var(--radius-lg)',
+                    background: on ? s.activeBg : 'var(--card)',
+                    cursor: 'pointer', transition: 'border-color 150ms, background 150ms',
+                  }}
+                >
+                  <span style={{
+                    flexShrink: 0, width: 44, height: 44, borderRadius: 'var(--radius-md)',
+                    background: on ? s.activeIconBg : 'var(--muted)',
+                    color: on ? s.accent : 'var(--fg-muted)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 150ms, color 150ms',
+                  }}>
+                    <i className={`ph ${s.icon}`} style={{ fontSize: 22 }} />
+                  </span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 4 }}>
+                      <span style={{ fontSize: 17, fontWeight: 600, color: on ? s.accent : 'var(--fg)' }}>{s.label}</span>
+                      <span style={{ fontSize: 13, color: 'var(--fg-muted)' }}>{s.tagline}</span>
+                    </span>
+                    <span style={{ display: 'block', fontSize: 14, lineHeight: '21px', color: 'var(--fg-muted)' }}>{s.desc}</span>
+                  </span>
+                  <span style={{
+                    flexShrink: 0, width: 22, height: 22, borderRadius: 9999, marginTop: 2,
+                    border: on ? 'none' : '1.5px solid var(--border)',
+                    background: on ? s.accent : 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {on && <i className="ph-bold ph-check" style={{ fontSize: 12, color: '#fff' }} />}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button className="btn-lime" onClick={handleBegin}>
+              Begin<i className="ph-bold ph-arrow-right" />
+            </button>
+            <button
+              className="btn-ghost"
+              onClick={() => setPhase('intro')}
+              style={{ fontSize: 14 }}
+            >
+              <i className="ph ph-arrow-left" style={{ fontSize: 14 }} />
+              Back
             </button>
           </div>
         </div>

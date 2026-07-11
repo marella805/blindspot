@@ -1,9 +1,12 @@
 export type Screen = 'log' | 'interrogation' | 'reflections' | 'patterns' | 'profile'
+export type DemoMode = 'picker' | 'fresh' | 'seasoned'
 
 export interface UserProfile {
   name: string
+  initials: string
   role: string
   decisionContext: string
+  calibration: number
   createdAt: string
 }
 
@@ -18,11 +21,11 @@ export interface DecisionEntry {
   id: string
   title: string
   summary: string
+  category: string
   options: DecisionOption[]
   chosenOption?: string
   reasoning?: string
-  interrogationSessionId?: string
-  manualEntry: boolean
+  interrogated: boolean
   createdAt: string
   updatedAt: string
   lockedAt?: string
@@ -32,15 +35,6 @@ export interface InterrogationMessage {
   role: 'user' | 'assistant'
   content: string
   timestamp: string
-}
-
-export interface InterrogationSession {
-  id: string
-  decisionTitle: string
-  messages: InterrogationMessage[]
-  summary?: string
-  completedAt?: string
-  createdAt: string
 }
 
 export interface ReflectionRecord {
@@ -59,4 +53,11 @@ export interface PatternAlert {
   relatedDecisionIds: string[]
   detectedAt: string
   dismissed: boolean
+}
+
+export interface AppData {
+  profile: UserProfile
+  decisions: DecisionEntry[]
+  reflections: ReflectionRecord[]
+  patterns: PatternAlert[]
 }

@@ -1,92 +1,140 @@
 import { useState } from 'react'
-import { sampleReflections, sampleDecisions } from './data'
-import type { ReflectionRecord } from './types'
+import type { AppData, ReflectionRecord } from './types'
 
-export function Reflections() {
-  const [reflections] = useState<ReflectionRecord[]>(sampleReflections)
+interface Props {
+  data: AppData
+}
+
+export function Reflections({ data }: Props) {
+  const [reflections, setReflections] = useState<ReflectionRecord[]>(data.reflections)
   const [active, setActive] = useState<string | null>(null)
   const [text, setText] = useState('')
+
+  function getDecisionTitle(id: string) {
+    return data.decisions.find(d => d.id === id)?.title ?? 'Unknown decision'
+  }
+
+  function completeReflection(id: string) {
+    setReflections(prev =>
+      prev.map(r => r.id === id ? { ...r, completedAt: new Date().toISOString(), content: text } : r)
+    )
+    setActive(null)
+    setText('')
+  }
 
   const pending = reflections.filter(r => !r.completedAt)
   const completed = reflections.filter(r => r.completedAt)
 
-  function getDecisionTitle(id: string) {
-    return sampleDecisions.find(d => d.id === id)?.title ?? 'Unknown decision'
-  }
-
-  function formatScheduled(iso: string) {
-    return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  if (reflections.length === 0) {
+    return (
+      <div className="screen">
+        <div>
+          <h2>Reflections</h2>
+          <div className="divider-line" />
+          <p className="lead">Scheduled prompts to revisit past decisions and close the feedback loop.</p>
+        </div>
+        <div className="empty">
+          <div style={{ width: 64, height: 64, borderRadius: 18, background: 'var(--blue-ink-50)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+            <i className="ph ph-arrow-u-up-left" style={{ fontSize: 30, color: 'var(--blue-ink-600)' }} />
+          </div>
+          <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 400 }}>No reflections yet</h3>
+          <p className="muted">Reflections are scheduled automatically — 1 month and 3 months after each decision you log.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="screen">
-      <div className="screen-header">
-        <h1>Reflections</h1>
-        <p className="muted">Scheduled prompts to revisit past decisions and close the feedback loop.</p>
+      <div>
+        <h2>Reflections</h2>
+        <div className="divider-line" />
+        <p className="lead">Scheduled prompts to revisit past decisions and close the feedback loop.</p>
       </div>
 
       {pending.length > 0 && (
-        <section>
-          <h2 className="section-title">Pending</h2>
+        <div>
+          <div className="label-xs" style={{ marginBottom: 10 }}>
+            Due ({pending.length})
+          </div>
           <div className="list">
             {pending.map(r => (
-              <div key={r.id} className="list-item">
-                <div className="list-item-header">
-                  <span className="list-item-title">{getDecisionTitle(r.decisionId)}</span>
-                  <span className="badge">{r.type === '1month' ? '1-month' : '3-month'}</span>
+              <div key={r.id} className="list-item" style={{ cursor: 'default' }}>
+                <div className="list-item-row">
+                  <span className="list-item-title" style={{ fontSize: 14 }}>{getDecisionTitle(r.decisionId)}</span>
+                  <span className="badge badge-info">{r.type === '1month' ? '1-month' : '3-month'} check-in</span>
                 </div>
-                <p className="small muted">Scheduled for {formatScheduled(r.scheduledFor)}</p>
+                <span className="muted" style={{ fontSize: 13 }}>Scheduled for {fmt(r.scheduledFor)}</span>
 
                 {active === r.id ? (
-                  <div className="reflection-input">
+                  <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ background: 'var(--blue-ink-50)', border: '1px solid var(--blue-ink-100)', borderRadius: 'var(--radius-md)', padding: '12px 14px', marginBottom: 4 }}>
+                      <p style={{ fontSize: 13, color: 'var(--blue-ink-700)', lineHeight: '20px' }}>
+                        <strong>Prompt:</strong> How did this decision play out? What do you know now that you didn't when you made it? Was the reasoning you wrote down accurate?
+                      </p>
+                    </div>
                     <textarea
-                      placeholder="How did this decision play out? What do you know now that you didn't then?"
+                      rows={4}
                       value={text}
                       onChange={e => setText(e.target.value)}
-                      rows={4}
+                      placeholder="Write your reflection…"
+                      style={{
+                        padding: '12px 14px', borderRadius: 'var(--radius-md)',
+                        border: '1px solid var(--input)', background: 'var(--card)',
+                        fontSize: 15, lineHeight: '24px', resize: 'none', outline: 'none',
+                        width: '100%', transition: 'border-color 150ms, box-shadow 150ms',
+                      }}
                       autoFocus
                     />
-                    <div className="row gap-sm">
-                      <button className="btn btn-primary" disabled={!text.trim()}>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <button className="btn-lime" disabled={!text.trim()} onClick={() => completeReflection(r.id)}>
                         Save reflection
                       </button>
-                      <button className="btn" onClick={() => setActive(null)}>Cancel</button>
+                      <button className="btn-outline" onClick={() => setActive(null)}>Cancel</button>
                     </div>
                   </div>
                 ) : (
-                  <button className="btn" onClick={() => setActive(r.id)}>
+                  <button className="btn-outline" onClick={() => { setActive(r.id); setText('') }} style={{ marginTop: 10, alignSelf: 'flex-start' }}>
+                    <i className="ph ph-pencil" style={{ fontSize: 14 }} />
                     Write reflection
                   </button>
                 )}
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {completed.length > 0 && (
-        <section>
-          <h2 className="section-title">Completed</h2>
+        <div>
+          <div className="label-xs" style={{ marginBottom: 10 }}>Completed ({completed.length})</div>
           <div className="list">
             {completed.map(r => (
-              <div key={r.id} className="list-item">
-                <div className="list-item-header">
-                  <span className="list-item-title">{getDecisionTitle(r.decisionId)}</span>
-                  <span className="badge badge-locked">Done</span>
+              <div key={r.id} className="list-item" style={{ cursor: 'default' }}>
+                <div className="list-item-row">
+                  <span className="list-item-title" style={{ fontSize: 14 }}>{getDecisionTitle(r.decisionId)}</span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <span className="badge" style={{ background: 'var(--muted)', color: 'var(--fg-muted)' }}>
+                      {r.type === '1month' ? '1-month' : '3-month'}
+                    </span>
+                    <span className="badge badge-success">Done</span>
+                  </div>
                 </div>
-                <p className="small muted">Completed {r.completedAt ? formatScheduled(r.completedAt) : ''}</p>
-                {r.content && <p className="small">{r.content}</p>}
+                <span className="muted" style={{ fontSize: 13 }}>Completed {r.completedAt ? fmt(r.completedAt) : ''}</span>
+                {r.content && (
+                  <div style={{ borderLeft: '2px solid var(--border)', paddingLeft: 14, marginTop: 10 }}>
+                    <p style={{ fontSize: 14, lineHeight: '22px', color: 'var(--fg)', fontStyle: 'italic' }}>{r.content}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
-        </section>
-      )}
-
-      {pending.length === 0 && completed.length === 0 && (
-        <div className="empty">
-          <p>No reflections scheduled yet. Reflections are automatically created when you log a decision.</p>
         </div>
       )}
     </div>
   )
+}
+
+function fmt(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 }

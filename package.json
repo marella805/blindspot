@@ -1,0 +1,38 @@
+{
+  "name": "blindspot",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "oxlint src/",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx src/lib/db/seed.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^1.2.12",
+    "@ai-sdk/groq": "^1.0.0",
+    "@auth/drizzle-adapter": "^1.7.4",
+    "ai": "^4.3.16",
+    "drizzle-orm": "^0.44.2",
+    "next": "15.5.20",
+    "next-auth": "^5.0.0-beta.28",
+    "postgres": "^3.4.5",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.1",
+    "oxlint": "^1.71.0",
+    "playwright": "^1.61.1",
+    "tsx": "^4.19.4",
+    "typescript": "~6.0.2"
+  }
+}

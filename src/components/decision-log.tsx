@@ -28,71 +28,6 @@ function CountUp({ to, suffix = '', duration = 1100 }: { to: number; suffix?: st
   return <>{val}{suffix}</>
 }
 
-// ── Relative time ───────────────────────────────────────────────────────────
-function relTime(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime()
-  const d = Math.floor(diff / 86400000)
-  if (d < 1) return 'Today'
-  if (d < 7) return `${d}d ago`
-  if (d < 30) return `${Math.floor(d / 7)}w ago`
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-// ── Timeline event builder ──────────────────────────────────────────────────
-interface TLEvent {
-  key: string
-  type: 'decision' | 'reflection' | 'pattern'
-  icon: string
-  title: string
-  detail?: string
-  tag?: string
-  date: string
-}
-
-function buildTimeline(data: AppData): TLEvent[] {
-  const events: TLEvent[] = []
-
-  for (const d of data.decisions) {
-    events.push({
-      key: `d-${d.id}`,
-      type: 'decision',
-      icon: 'ph-fill ph-scales',
-      title: d.title,
-      detail: d.reasoning ?? (d.summary.slice(0, 90) + (d.summary.length > 90 ? '…' : '')),
-      tag: d.interrogated ? 'Interrogated' : d.category,
-      date: d.createdAt,
-    })
-  }
-
-  for (const r of data.reflections) {
-    if (!r.completedAt) continue
-    const decision = data.decisions.find(d => d.id === r.decisionId)
-    events.push({
-      key: `r-${r.id}`,
-      type: 'reflection',
-      icon: 'ph ph-arrow-counter-clockwise',
-      title: `${r.type === '1month' ? '1-month' : '3-month'} reflection — ${decision?.title?.slice(0, 50)}…`,
-      detail: r.content?.slice(0, 100) + (r.content && r.content.length > 100 ? '…' : ''),
-      tag: 'Reflection',
-      date: r.completedAt,
-    })
-  }
-
-  for (const p of data.patterns) {
-    events.push({
-      key: `p-${p.id}`,
-      type: 'pattern',
-      icon: 'ph-fill ph-sparkle',
-      title: p.title,
-      detail: p.description.slice(0, 90) + '…',
-      tag: 'Pattern',
-      date: p.detectedAt,
-    })
-  }
-
-  return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 7)
-}
-
 // ── Main component ──────────────────────────────────────────────────────────
 export function DecisionLog({ data, onStartInterrogation }: Props) {
   const { decisions, reflections, patterns, profile } = data
@@ -126,8 +61,6 @@ export function DecisionLog({ data, onStartInterrogation }: Props) {
     const t = setTimeout(() => setBarWidth(readinessPct), 80)
     return () => clearTimeout(t)
   }, [readinessPct])
-
-  const timeline = buildTimeline(data)
 
   return (
     <div className="screen">

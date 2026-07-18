@@ -2,7 +2,7 @@ import { generateObject } from 'ai'
 import { groq } from '@/lib/ai'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { recommendations, interrogationSessions, patternAlerts, patternAlertDecisions, patternTypes, decisions } from '@/lib/db/schema'
+import { recommendations, interrogationSessions, patternAlerts, patternAlertDecisions, patternTypes } from '@/lib/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 

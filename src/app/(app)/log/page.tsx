@@ -12,11 +12,6 @@ export default async function LogPage() {
 
   const userId = session.user.id
 
-  const user = await db.query.users.findFirst({
-    where: eq(decisions.userId, userId),
-    columns: {},
-  }).catch(() => null)
-
   const [userDecisions, userAlerts] = await Promise.all([
     db.query.decisions.findMany({
       where: eq(decisions.userId, userId),

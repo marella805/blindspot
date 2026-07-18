@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { reflections, decisions } from '@/lib/db/schema'
+import { reflections } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {

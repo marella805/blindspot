@@ -104,7 +104,7 @@ export function Patterns({ data }: Props) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
         {active
           .filter(p => activeTab === null || activeTab === p.id)
-          .map((pattern, patternIdx) => {
+          .map((pattern, _patternIdx) => {
             const relatedDecisions = pattern.relatedDecisionIds
               .map(id => data.decisions.find(d => d.id === id))
               .filter(Boolean) as typeof data.decisions

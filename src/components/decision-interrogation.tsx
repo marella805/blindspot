@@ -512,8 +512,6 @@ export function DecisionInterrogation({ isFresh, patterns = [], decisions = [], 
   if (phase === 'result') {
     const goalAnswer      = answers[0] ?? ''
     const revealedAnswer  = answers[4] ?? ''
-    const challengeAnswer = answers[2] ?? ''
-
     // Synthesise a call from Q5 when no pattern rec exists
     function synthesizeCall(): { answer: string; rationale: string } {
       // Look for "it's actually a X question" reframe

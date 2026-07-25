@@ -34,4 +34,5 @@ jobs:
           az containerapp update \
             --name ca-${{ vars.STUDENT }} \
             --resource-group rg-students-platform \
-            --image ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STUDENT }}:${{ github.sha }}
+            --image ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STUDENT }}:${{ github.sha }} \
+            --set-env-vars AUTH_RESEND_KEY=${{ secrets.AUTH_RESEND_KEY }}

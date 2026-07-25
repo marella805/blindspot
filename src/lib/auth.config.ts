@@ -4,6 +4,7 @@ import type { NextAuthConfig } from 'next-auth'
 // Used by middleware for JWT validation. Full config (with adapter) is in auth.ts.
 export const authConfig: NextAuthConfig = {
   session: { strategy: 'jwt' },
+  trustHost: true,
   providers: [],
   callbacks: {
     session({ session, token }) {

@@ -1,0 +1,537 @@
+{
+  "sources": [
+    "https://www.tuw.edu/psychology/psychology-of-decision-making/",
+    "https://en.wikipedia.org/wiki/List_of_cognitive_biases",
+    "https://en.wikipedia.org/wiki/Decision-making"
+  ],
+  "last_updated": "2026-07-18",
+  "categories": {
+    "cognitive_bias": "Mental shortcuts or distortions in perception that affect how information is encoded and interpreted",
+    "emotional_blocker": "Emotional states or dynamics that interfere with rational analysis",
+    "processing_bias": "Errors arising from how information is processed or weighted",
+    "decision_bias": "Biases that specifically distort choice selection among alternatives",
+    "temporal_bias": "Biases related to time perception, planning, and how past/future are weighted",
+    "social_bias": "Group dynamics and social influence effects on decision-making",
+    "self_perception_bias": "Distortions in how one evaluates one's own abilities, beliefs, or outcomes",
+    "inertia_bias": "Tendencies to persist with existing states, commitments, or mental models"
+  },
+  "decision_making_blockers": [
+    {
+      "id": "confirmation_bias",
+      "name": "Confirmation Bias",
+      "category": "cognitive_bias",
+      "description": "Favoring information that supports preexisting beliefs, causing decision-makers to ignore contradicting evidence.",
+      "mechanism": "Selective attention and memory reinforce existing views rather than challenging them."
+    },
+    {
+      "id": "hindsight_bias",
+      "name": "Hindsight Bias",
+      "category": "cognitive_bias",
+      "description": "Believing past events were predictable after the fact (the 'I-knew-it-all-along' effect), leading to overconfidence in future predictions.",
+      "mechanism": "Distorts memory of past uncertainty, making the decision-maker think outcomes were obvious all along."
+    },
+    {
+      "id": "availability_heuristic",
+      "name": "Availability Heuristic",
+      "category": "cognitive_bias",
+      "description": "Over-relying on immediate examples that come to mind — especially recent, vivid, or emotionally charged ones — rather than statistical probability.",
+      "mechanism": "Vivid or recent events are weighted too heavily because they are easier to recall."
+    },
+    {
+      "id": "anchoring_bias",
+      "name": "Anchoring Bias",
+      "category": "cognitive_bias",
+      "description": "Over-reliance on the first piece of information received when making subsequent judgments.",
+      "mechanism": "Initial reference point disproportionately shapes all further estimates and decisions."
+    },
+    {
+      "id": "base_rate_fallacy",
+      "name": "Base Rate Fallacy",
+      "category": "cognitive_bias",
+      "description": "Ignoring general statistical information (base rates) and focusing only on specific case details, even when the general data is more informative.",
+      "mechanism": "Vivid specific information crowds out abstract statistical information in working memory."
+    },
+    {
+      "id": "conjunction_fallacy",
+      "name": "Conjunction Fallacy",
+      "category": "cognitive_bias",
+      "description": "Assuming that specific conditions are more probable than a more general version of those same conditions.",
+      "mechanism": "Representativeness heuristic overrides probability rules; a detailed scenario feels more plausible even though it is logically less likely."
+    },
+    {
+      "id": "gamblers_fallacy",
+      "name": "Gambler's Fallacy",
+      "category": "cognitive_bias",
+      "description": "Believing that future probabilities are altered by past independent events — e.g., expecting tails after a long streak of heads.",
+      "mechanism": "Erroneous conceptualization of randomness; the brain expects patterns and reversion to the mean even in truly independent trials."
+    },
+    {
+      "id": "dunning_kruger_effect",
+      "name": "Dunning–Kruger Effect",
+      "category": "self_perception_bias",
+      "description": "Unskilled individuals overestimate their own ability while experts tend to underestimate theirs.",
+      "mechanism": "Metacognitive deficit — the skills needed to evaluate competence are the same skills one lacks; expertise builds calibrated uncertainty."
+    },
+    {
+      "id": "emotional_interference",
+      "name": "Emotional Interference",
+      "category": "emotional_blocker",
+      "description": "Emotions such as anxiety or excitement override rational analysis, leading to reactive or impulsive decisions.",
+      "mechanism": "The limbic system can override prefrontal cortex processing under emotional activation, especially anxiety (risk aversion) or excitement (impulsivity)."
+    },
+    {
+      "id": "stress_response",
+      "name": "Stress Response",
+      "category": "emotional_blocker",
+      "description": "Acute stress narrows cognitive processing and triggers fight-or-flight shortcuts instead of deliberate analysis.",
+      "mechanism": "Even high-intelligence individuals fall into emotional decision traps under stress, substituting System 1 fast thinking for System 2 slow thinking."
+    },
+    {
+      "id": "dread_aversion",
+      "name": "Dread Aversion",
+      "category": "emotional_blocker",
+      "description": "Anticipated dread of a negative future state carries double the emotional weight of its equivalent loss, distorting risk assessments.",
+      "mechanism": "Prospective negative emotions (dread) are weighted asymmetrically compared to prospective positive emotions (savoring), biasing decisions toward avoiding uncertain but frightening futures."
+    },
+    {
+      "id": "hot_cold_empathy_gap",
+      "name": "Hot-Cold Empathy Gap",
+      "category": "emotional_blocker",
+      "description": "Underestimating the influence of visceral drives (hunger, pain, desire) on one's attitudes and decisions when in a 'cold' emotional state.",
+      "mechanism": "People in a cold state cannot accurately simulate the influence of hot states on future behavior, leading to plans that collapse under emotional pressure."
+    },
+    {
+      "id": "system1_overreliance",
+      "name": "System 1 Overreliance",
+      "category": "processing_bias",
+      "description": "Defaulting to fast, intuitive, automatic responses for decisions that require deliberate analytical thinking.",
+      "mechanism": "Routine-pattern matching is applied to novel or complex situations where it is inappropriate."
+    },
+    {
+      "id": "attribute_substitution",
+      "name": "Attribute Substitution",
+      "category": "processing_bias",
+      "description": "When a judgment about a complex target attribute is too hard to compute, a simpler, more accessible heuristic attribute is substituted without awareness.",
+      "mechanism": "The intuitive (System 1) judgment system swaps a hard question for an easier one; the reflective system rarely notices or corrects the substitution."
+    },
+    {
+      "id": "ambiguity_effect",
+      "name": "Ambiguity Effect",
+      "category": "decision_bias",
+      "description": "Avoiding options for which the probability of a favorable outcome is unknown, even when they may have higher expected value than known-probability options.",
+      "mechanism": "Uncertainty about probability is treated as if it were a certain loss; people prefer a known bad bet over an unknown one."
+    },
+    {
+      "id": "authority_bias",
+      "name": "Authority Bias",
+      "category": "decision_bias",
+      "description": "Attributing greater accuracy to the opinion of an authority figure regardless of the content of that opinion, and being disproportionately influenced by it.",
+      "mechanism": "Social learning heuristic elevates source credibility over argument quality; the authority signal short-circuits independent evaluation."
+    },
+    {
+      "id": "automation_bias",
+      "name": "Automation Bias",
+      "category": "decision_bias",
+      "description": "Depending excessively on automated systems, leading to erroneous automated information overriding correct human judgments.",
+      "mechanism": "Over-trust in algorithmic or technological outputs reduces vigilance; humans delegate verification to the system, creating single points of failure."
+    },
+    {
+      "id": "default_effect",
+      "name": "Default Effect",
+      "category": "decision_bias",
+      "description": "A strong tendency to favor whatever option has been pre-selected as the default, often resulting in passive acceptance of suboptimal choices.",
+      "mechanism": "Defaults are interpreted as implicit recommendations, and switching from them requires mental effort that most people avoid."
+    },
+    {
+      "id": "framing_effect",
+      "name": "Framing Effect",
+      "category": "decision_bias",
+      "description": "Drawing different conclusions from identical information depending on how it is presented — as a gain versus a loss, a percentage versus an absolute number, etc.",
+      "mechanism": "Reference-dependent evaluation: the mind judges outcomes relative to a reference point rather than absolutely, and framing determines which reference point is activated."
+    },
+    {
+      "id": "hyperbolic_discounting",
+      "name": "Hyperbolic Discounting",
+      "category": "decision_bias",
+      "description": "A strong preference for more immediate payoffs relative to later ones, producing time-inconsistent choices — decisions made today that the future self would prefer had not been made.",
+      "mechanism": "Intertemporal utility is discounted at a steeper rate for near-future events than for far-future ones, creating preference reversals as time passes."
+    },
+    {
+      "id": "loss_aversion",
+      "name": "Loss Aversion",
+      "category": "decision_bias",
+      "description": "The perceived disutility of losing something is roughly twice as powerful as the utility of gaining an equivalent thing, causing excessive risk avoidance.",
+      "mechanism": "Prospect theory: value functions are steeper in the loss domain than the gain domain; the emotional pain of a loss outweighs the pleasure of an equal gain."
+    },
+    {
+      "id": "neglect_of_probability",
+      "name": "Neglect of Probability",
+      "category": "decision_bias",
+      "description": "Completely disregarding probability when making a decision under uncertainty — treating any nonzero risk as either negligible or catastrophic.",
+      "mechanism": "Availability and affect heuristics override probabilistic reasoning; emotional salience of an outcome dominates its objective likelihood."
+    },
+    {
+      "id": "pseudocertainty_effect",
+      "name": "Pseudocertainty Effect",
+      "category": "decision_bias",
+      "description": "Making risk-averse choices when the expected outcome is positive but risk-seeking choices when it is negative, even when the underlying probabilities are equal.",
+      "mechanism": "Outcome sign reverses the reference point, flipping the direction of loss aversion and creating inconsistent risk preferences."
+    },
+    {
+      "id": "zero_risk_bias",
+      "name": "Zero-Risk Bias",
+      "category": "decision_bias",
+      "description": "Preferring the complete elimination of a small risk over a greater reduction in a larger risk, even when the latter provides more expected benefit.",
+      "mechanism": "Psychological certainty has disproportionate value; zero-risk outcomes feel qualitatively different from low-risk ones, distorting expected-value calculations."
+    },
+    {
+      "id": "action_bias",
+      "name": "Action Bias",
+      "category": "decision_bias",
+      "description": "The tendency to act when faced with a problem even when inaction would be more effective, or to act when no problem actually exists.",
+      "mechanism": "Doing something feels more controllable than doing nothing; inaction triggers regret, social criticism, or perceived incompetence even when it is the rational choice."
+    },
+    {
+      "id": "additive_bias",
+      "name": "Additive Bias",
+      "category": "decision_bias",
+      "description": "Defaulting to solving problems by adding elements (features, steps, rules) even when removing existing elements would be a better or simpler solution.",
+      "mechanism": "Additions are more salient and visible as 'improvements'; subtractions are cognitively invisible because the missing piece provides no perceptual cue."
+    },
+    {
+      "id": "decoy_effect",
+      "name": "Decoy Effect",
+      "category": "decision_bias",
+      "description": "Preferences between options A and B shift in favor of B when a third option C is added that is dominated by B but only partially dominated by A.",
+      "mechanism": "The asymmetrically dominated option makes B look better by comparison; relative advantage within a comparison set is used as a shortcut for absolute value."
+    },
+    {
+      "id": "normalcy_bias",
+      "name": "Normalcy Bias",
+      "category": "decision_bias",
+      "description": "Refusing to plan for or react to a disaster that has never happened before, underestimating both the probability and the impact of unprecedented events.",
+      "mechanism": "The mind anchors threat assessment to past experience; unprecedented events have no template, so the brain defaults to minimizing their probability."
+    },
+    {
+      "id": "projection_bias",
+      "name": "Projection Bias",
+      "category": "decision_bias",
+      "description": "Overestimating how much one's future self will share one's current preferences, thoughts, and values, leading to sub-optimal intertemporal choices.",
+      "mechanism": "Current emotional and physical states are anchored into forecasts of future preferences; the difficulty of simulating future states makes the present state dominate."
+    },
+    {
+      "id": "scope_neglect",
+      "name": "Scope Neglect",
+      "category": "decision_bias",
+      "description": "Being insensitive to the magnitude or scale of a problem when evaluating it — willing to pay nearly as much to solve a 2,000-unit problem as a 200,000-unit one.",
+      "mechanism": "Affective imagery rather than analytic evaluation drives willingness-to-pay; a mental image of a victim or problem activates a fixed emotional response independent of scale."
+    },
+    {
+      "id": "prevention_bias",
+      "name": "Prevention Bias",
+      "category": "decision_bias",
+      "description": "Perceiving a dollar spent on prevention as buying more security than the same dollar spent on detection and response, even when both investments are equally effective.",
+      "mechanism": "Prevention feels like eliminating risk while response feels like coping with failure; the psychological certainty gap favors elimination over mitigation."
+    },
+    {
+      "id": "planning_fallacy",
+      "name": "Planning Fallacy",
+      "category": "temporal_bias",
+      "description": "Systematically underestimating the time, costs, and risks of future actions while overestimating the benefits.",
+      "mechanism": "Inside-view thinking focuses on the specific plan rather than the distribution of outcomes for similar past projects; optimism bias and motivated reasoning reinforce underestimation."
+    },
+    {
+      "id": "present_bias",
+      "name": "Present Bias",
+      "category": "temporal_bias",
+      "description": "Giving disproportionately stronger weight to payoffs that are closer to the present moment when considering trade-offs between two future outcomes.",
+      "mechanism": "Immediate rewards activate the mesolimbic dopamine system more strongly than delayed rewards; visceral near-term pulls override longer-term deliberative planning."
+    },
+    {
+      "id": "escalation_of_commitment",
+      "name": "Escalation of Commitment (Sunk Cost Fallacy)",
+      "category": "temporal_bias",
+      "description": "Continuing to invest resources in a failing course of action because of prior investment, even when new evidence indicates the decision was wrong.",
+      "mechanism": "Past costs (already irrecoverable) are psychologically treated as ongoing assets; stopping feels like 'wasting' the prior investment rather than minimizing future losses."
+    },
+    {
+      "id": "conservatism_bias",
+      "name": "Conservatism Bias",
+      "category": "temporal_bias",
+      "description": "Insufficiently updating beliefs when presented with new evidence, anchoring too heavily to prior beliefs.",
+      "mechanism": "Belief revision requires cognitive effort; anchoring to prior views is the path of least resistance and is reinforced by identity-protective cognition."
+    },
+    {
+      "id": "status_quo_bias",
+      "name": "Status Quo Bias",
+      "category": "inertia_bias",
+      "description": "Preferring the current state of affairs, with any change perceived as a loss rather than as a potential gain.",
+      "mechanism": "Loss aversion combines with omission bias; the costs of changing are weighted more heavily than equivalent benefits of the new state."
+    },
+    {
+      "id": "endowment_effect",
+      "name": "Endowment Effect",
+      "category": "inertia_bias",
+      "description": "Demanding significantly more to give up an object or position than one would be willing to pay to acquire it.",
+      "mechanism": "Ownership shifts the reference point; the object becomes part of the self-concept and relinquishing it is experienced as a loss rather than a trade."
+    },
+    {
+      "id": "plan_continuation_bias",
+      "name": "Plan Continuation Bias",
+      "category": "inertia_bias",
+      "description": "Failure to recognize that an original plan of action is no longer appropriate for a situation that has changed or was different from what was anticipated.",
+      "mechanism": "Cognitive tunnel vision — attention is narrowed to executing the plan rather than re-evaluating it; the mental effort of replanning is avoided."
+    },
+    {
+      "id": "semmelweis_reflex",
+      "name": "Semmelweis Reflex",
+      "category": "inertia_bias",
+      "description": "Reflexively rejecting new evidence that contradicts an established paradigm, without giving the evidence fair consideration.",
+      "mechanism": "Identity-protective cognition treats paradigm change as a threat; prior investment in the existing worldview creates resistance proportional to the challenge."
+    },
+    {
+      "id": "functional_fixedness",
+      "name": "Functional Fixedness",
+      "category": "inertia_bias",
+      "description": "A tendency to perceive objects or processes only in terms of their conventional use, blocking creative problem-solving.",
+      "mechanism": "Semantic memory encodes objects with their typical function; alternative uses require breaking the habitual mental categorization."
+    },
+    {
+      "id": "mere_exposure_effect",
+      "name": "Mere Exposure Effect",
+      "category": "inertia_bias",
+      "description": "Developing undue preference for things simply because of repeated exposure to them, independent of any objective merit.",
+      "mechanism": "Processing fluency: familiar stimuli are processed faster and more easily, and fluency is misattributed to positive affect or quality."
+    },
+    {
+      "id": "not_invented_here",
+      "name": "Not Invented Here",
+      "category": "inertia_bias",
+      "description": "Aversion to using or adopting products, ideas, standards, or knowledge developed outside one's own group, even when they are superior.",
+      "mechanism": "In-group favoritism and ownership bias inflate the perceived value of internal work; external alternatives trigger identity threat."
+    },
+    {
+      "id": "groupthink",
+      "name": "Groupthink",
+      "category": "social_bias",
+      "description": "A group dynamic in which the desire for harmony and conformity suppresses dissenting viewpoints, leading to irrational or dysfunctional collective decisions.",
+      "mechanism": "Social cohesion pressure causes members to self-censor; dissenting voices are suppressed and the group isolates itself from outside information, creating an illusion of unanimity."
+    },
+    {
+      "id": "groupshift",
+      "name": "Groupshift (Group Polarization)",
+      "category": "social_bias",
+      "description": "After group discussion, decisions become more extreme in the direction the group was already leaning — either more risk-seeking or more risk-averse than individuals would choose alone.",
+      "mechanism": "Social comparison and persuasive argumentation amplify the dominant pre-existing tendency; members compete to align with perceived group values."
+    },
+    {
+      "id": "shared_information_bias",
+      "name": "Shared Information Bias",
+      "category": "social_bias",
+      "description": "Group members spend more time discussing information that everyone already knows, and less time on unique information that only one or a few members hold.",
+      "mechanism": "Shared information is easier to introduce and validate socially; unshared information has no social reinforcement and is difficult to insert into a group consensus process."
+    },
+    {
+      "id": "availability_cascade",
+      "name": "Availability Cascade",
+      "category": "social_bias",
+      "description": "A self-reinforcing process where a collective belief gains increasing plausibility simply through repetition in public discourse, regardless of its factual basis.",
+      "mechanism": "Each repetition increases fluency and perceived social consensus; availability heuristic conflates frequency of mention with probability of truth."
+    },
+    {
+      "id": "reactive_devaluation",
+      "name": "Reactive Devaluation",
+      "category": "social_bias",
+      "description": "Automatically devaluing proposals or concessions because they come from a perceived adversary, even when they have genuine merit.",
+      "mechanism": "Social identity dynamics cause proposals to be evaluated through the lens of who made them rather than their content; concessions from opponents are seen as traps."
+    },
+    {
+      "id": "optimism_bias",
+      "name": "Optimism Bias",
+      "category": "self_perception_bias",
+      "description": "Overestimating the likelihood of positive events and underestimating the probability of negative ones for oneself compared to others.",
+      "mechanism": "The brain preferentially processes and remembers desirable information; unrealistic optimism is reinforced by motivated reasoning and the desire to maintain positive self-image."
+    },
+    {
+      "id": "pessimism_bias",
+      "name": "Pessimism Bias",
+      "category": "self_perception_bias",
+      "description": "Overestimating the likelihood of bad outcomes, leading to excessive caution or avoidance of potentially beneficial opportunities.",
+      "mechanism": "Negativity bias and loss aversion amplify threats; depressive realism or anxiety can cause accurate or over-weighted perception of risks."
+    },
+    {
+      "id": "illusion_of_explanatory_depth",
+      "name": "Illusion of Explanatory Depth",
+      "category": "self_perception_bias",
+      "description": "Believing one understands a concept, system, or process far better than one actually does until asked to explain it in detail.",
+      "mechanism": "Familiarity is conflated with understanding; the brain generates a feeling of comprehension from recognition rather than from having constructed a working causal model."
+    },
+    {
+      "id": "false_consensus_effect",
+      "name": "False Consensus Effect",
+      "category": "self_perception_bias",
+      "description": "Overestimating the degree to which others share one's own beliefs, preferences, and behaviors.",
+      "mechanism": "One's own views dominate social sampling; the people one interacts with tend to be similar, inflating the perceived prevalence of one's own position."
+    },
+    {
+      "id": "curse_of_knowledge",
+      "name": "Curse of Knowledge",
+      "category": "self_perception_bias",
+      "description": "Difficulty thinking about problems from the perspective of people who lack the expertise one has — once you know something, it is hard to imagine not knowing it.",
+      "mechanism": "Expert knowledge is highly automated and contextually compressed; decompressing it to the naive perspective requires explicit effort that is rarely taken."
+    },
+    {
+      "id": "illusion_of_validity",
+      "name": "Illusion of Validity",
+      "category": "self_perception_bias",
+      "description": "Overestimating the accuracy of one's own judgments, especially when the available information forms a coherent, consistent narrative.",
+      "mechanism": "Internal coherence of a story is mistaken for predictive validity; confidence tracks narrative fit rather than actual track record."
+    },
+    {
+      "id": "effort_justification",
+      "name": "Effort Justification (IKEA Effect)",
+      "category": "self_perception_bias",
+      "description": "Attributing greater value to an outcome or object when significant effort was required to achieve or create it, regardless of objective quality.",
+      "mechanism": "Cognitive dissonance reduction: admitting that hard work produced a mediocre result is psychologically painful, so the result is re-evaluated upward to justify the investment."
+    },
+    {
+      "id": "cognitive_dissonance",
+      "name": "Cognitive Dissonance",
+      "category": "processing_bias",
+      "description": "The mental discomfort experienced when holding contradictory beliefs or when new information conflicts with existing beliefs, leading to distorted reasoning to reduce the tension.",
+      "mechanism": "The brain resolves contradictions by rationalizing, dismissing evidence, or changing beliefs — whichever requires least ego-threat — rather than by seeking truth."
+    },
+    {
+      "id": "impact_bias",
+      "name": "Impact Bias",
+      "category": "processing_bias",
+      "description": "Overestimating both the intensity and the duration of emotional reactions to future events — positive or negative.",
+      "mechanism": "Focalism: when imagining a future event, attention is focused narrowly on it while other life circumstances that will moderate the emotional response are ignored."
+    },
+    {
+      "id": "identifiable_victim_effect",
+      "name": "Identifiable Victim Effect",
+      "category": "processing_bias",
+      "description": "Being more persuaded by a single, identified individual's story than by equivalent statistical data representing many more affected people.",
+      "mechanism": "Vivid, personal stories activate empathic systems; abstract statistics engage analytic thinking but not emotional motivation, leading to systematic discounting of scale."
+    },
+    {
+      "id": "analysis_paralysis",
+      "name": "Analysis Paralysis",
+      "category": "processing_bias",
+      "description": "Becoming unable to make a decision due to overthinking — repeatedly cycling through the same information, discovering new sub-questions, or being unable to eliminate uncertainty.",
+      "mechanism": "Three forms: (1) cyclical re-analysis from fear of error, (2) decision-precision paralysis where new questions spawn endlessly, and (3) risk-uncertainty paralysis where all uncertainty must be eliminated before acting. Overcomes the cognitive threshold required to commit."
+    },
+    {
+      "id": "information_overload",
+      "name": "Information Overload",
+      "category": "processing_bias",
+      "description": "A gap between the volume of available information and the cognitive tools to assimilate it, degrading decision quality as excessive data interferes with rational processing.",
+      "mechanism": "Working memory has a fixed capacity (Miller's Law: ~7 ± 2 items); when incoming information exceeds this, an 'illusion of knowledge' forms where more data paradoxically reduces clarity rather than improving it."
+    },
+    {
+      "id": "decision_fatigue",
+      "name": "Decision Fatigue",
+      "category": "emotional_blocker",
+      "description": "A decline in decision-making quality after an extended period of making decisions, producing either impulsive choices or complete decision avoidance.",
+      "mechanism": "Mental energy required for deliberate reasoning depletes with use; exhausted decision-makers default to impulse (acting without analyzing) or avoidance (deferring or refusing to choose), both of which bypass rational evaluation."
+    },
+    {
+      "id": "bounded_rationality",
+      "name": "Bounded Rationality",
+      "category": "processing_bias",
+      "description": "Human decision-making is constrained by limited information, limited time, and limited cognitive processing capacity — making truly optimal decisions practically impossible.",
+      "mechanism": "Herbert Simon's insight: people satisfice (choose the first acceptable option) rather than optimize, because searching for the globally best option exceeds available cognitive and informational resources."
+    },
+    {
+      "id": "overconfidence_effect",
+      "name": "Overconfidence Effect",
+      "category": "self_perception_bias",
+      "description": "Excessive confidence in one's own answers, judgments, or predictions relative to actual accuracy — typically expressed as calibration error where stated confidence far exceeds hit rate.",
+      "mechanism": "Fluency of generating justifications is mistaken for reliability; confidence tracks internal consistency rather than external validity, and people rarely receive systematic feedback on the accuracy of their confident predictions."
+    },
+    {
+      "id": "risk_compensation",
+      "name": "Risk Compensation (Peltzman Effect)",
+      "category": "decision_bias",
+      "description": "Taking greater risks when perceived safety increases — e.g., driving faster when wearing a seatbelt — offsetting or reversing the intended benefit of safety measures.",
+      "mechanism": "People maintain a target risk level; when safety measures reduce perceived risk below that target, behavior adjusts upward to restore the preferred level of arousal or risk."
+    },
+    {
+      "id": "ostrich_effect",
+      "name": "Ostrich Effect",
+      "category": "inertia_bias",
+      "description": "Deliberately avoiding information about potential problems or negative outcomes — 'burying one's head in the sand' — even when that information would improve decisions.",
+      "mechanism": "Information that threatens current commitments, self-image, or desired outcomes is psychologically costly; avoidance reduces anxiety in the short term at the expense of informed decision-making."
+    },
+    {
+      "id": "survivorship_bias",
+      "name": "Survivorship Bias",
+      "category": "cognitive_bias",
+      "description": "Focusing only on entities that passed a selection filter while ignoring those that did not, producing a systematically distorted picture of success rates, risks, or best practices.",
+      "mechanism": "Failed cases are invisible by definition; only survivors generate data, testimonials, and case studies, making the successful path appear more reliable and well-trodden than it actually is."
+    },
+    {
+      "id": "wysiati",
+      "name": "WYSIATI — What You See Is All There Is",
+      "category": "processing_bias",
+      "description": "Building a coherent, confident narrative from only the information currently available, without adequately accounting for unknown unknowns or missing data.",
+      "mechanism": "Kahneman's insight: System 1 automatically constructs the best possible story from whatever evidence is present and feels satisfaction when the story is coherent, regardless of how incomplete the evidence is."
+    },
+    {
+      "id": "recency_bias",
+      "name": "Recency Bias",
+      "category": "cognitive_bias",
+      "description": "Giving disproportionate weight to the most recent events when forming judgments or making forecasts, over-indexing on what just happened at the expense of longer-term patterns.",
+      "mechanism": "Recent events are more available in memory and feel more representative of current conditions; the brain uses temporal proximity as a proxy for relevance."
+    },
+    {
+      "id": "algorithm_aversion",
+      "name": "Algorithm Aversion",
+      "category": "decision_bias",
+      "description": "Rejecting or discounting algorithmic recommendations — even when they demonstrably outperform human judgment — after witnessing a single algorithmic error, driven by the belief that unlike humans, algorithms should make no errors at all.",
+      "mechanism": "Observing one algorithmic mistake triggers categorical failure attribution; because algorithms are expected to be deterministic and 'perfect,' any error is weighted far more heavily than an equivalent human error. The resulting distrust is resistant to base-rate evidence of superior algorithmic accuracy, causing systematic under-reliance on statistically superior decision aids. Coined by Dietvorst, Simmons & Massey (2015)."
+    },
+    {
+      "id": "continuous_partial_attention",
+      "name": "Continuous Partial Attention",
+      "category": "processing_bias",
+      "description": "The habitual, digitally-driven state of perpetually scanning multiple live information streams — notifications, feeds, messages — simultaneously, draining the cognitive depth needed for deliberate high-stakes analysis and pushing decisions toward risk-averse, low-effort defaults.",
+      "mechanism": "Coined by Linda Stone (1998): unlike multitasking (goal-directed), CPA is an always-on network-scanning mode driven by anxiety about missing information. Chronic attention fragmentation depletes working memory, forcing System 1 fast-thinking into decisions that require System 2 deliberation. Research shows CPA individuals become more risk-averse under cognitive load, selecting sub-optimal safe options rather than engaging in nuanced trade-off analysis."
+    },
+    {
+      "id": "filter_bubble_effect",
+      "name": "Filter Bubble Effect",
+      "category": "cognitive_bias",
+      "description": "The progressive narrowing of a decision-maker's information environment by personalization algorithms that surface only preference-confirming content, creating an epistemic cocoon where contradictory evidence is algorithmically invisible — not merely ignored — producing confident judgments built on a systematically skewed evidence base.",
+      "mechanism": "Unlike confirmation bias (active evidence avoidance), filter bubbles operate at infrastructure level: the contradicting information is never shown. Personalization algorithms at social platforms and search engines optimize for engagement, which correlates with prior agreement; over time they produce an increasingly homogeneous information diet. Decision-makers conflate the apparent consensus of their algorithmically curated feed with genuine population-level reality, mis-calibrating probability assessments and risk models accordingly. Term coined by Eli Pariser (2011)."
+    },
+    {
+      "id": "metric_fixation",
+      "name": "Metric Fixation (Goodhart's Law)",
+      "category": "processing_bias",
+      "description": "Over-relying on quantifiable digital proxies — engagement rates, conversion funnels, NPS scores, follower counts — as surrogates for harder-to-measure goals, causing decisions to optimize the metric at the expense of the underlying objective the metric was originally meant to track.",
+      "mechanism": "Goodhart's Law (1975): 'When a measure becomes a target, it ceases to be a good measure.' Digital dashboards make metrics continuously visible, real-time, and ostensibly objective, conferring false authority. The qualitative signals, lagging indicators, and contextual factors that the metric was designed to approximate become progressively invisible as the measurable proxy colonizes strategic decisions. Produces optimization against the map rather than the territory — e.g., maximizing click-through rates while customer satisfaction erodes, or shipping velocity while technical debt accumulates."
+    },
+    {
+      "id": "techno_solutionism_bias",
+      "name": "Techno-Solutionism Bias",
+      "category": "decision_bias",
+      "description": "The reflexive re-framing of complex social, organizational, or behavioral problems as technical problems amenable to digital or software solutions, causing decision-makers to build apps, dashboards, or algorithms when the underlying problem is cultural, structural, or fundamentally human.",
+      "mechanism": "Identified by Evgeny Morozov as the defining ideology of Silicon Valley: digital-native environments normalize software as a universal solution space. The high measurability and visibility of technical outputs — deployments, features, uptime — create an institutional preference for interventions that can be tracked on a roadmap. Sunk costs in engineering capability and the prestige of technological sophistication further bias option-generation toward technical solutions. Produces decisions that solve a re-specified, technically tractable version of the original problem while the root cause — trust deficit, misaligned incentives, skill gaps — goes unaddressed."
+    }
+  ],
+  "decision_making_systems": {
+    "system_1": {
+      "name": "Fast Thinking",
+      "traits": ["intuitive", "emotional", "automatic"],
+      "best_for": "Routine, low-stakes decisions (e.g. commute route, small purchases)"
+    },
+    "system_2": {
+      "name": "Slow Thinking",
+      "traits": ["deliberate", "analytical", "logical"],
+      "best_for": "Complex, high-stakes decisions (e.g. financial planning, strategy)"
+    }
+  },
+  "influential_factors": ["memory", "perception", "emotion", "reasoning", "social context", "time pressure", "prior commitment"]
+}

@@ -24,7 +24,7 @@ RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder /app/src/lib/db/migrations ./src/lib/db/migrations
+COPY --from=builder /app/src/lib/db ./src/lib/db
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /app/node_modules ./node_modules
 
@@ -33,4 +33,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "npx drizzle-kit migrate && node server.js"]
+CMD ["sh", "-c", "./node_modules/.bin/drizzle-kit migrate && node server.js"]

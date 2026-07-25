@@ -1,0 +1,14 @@
+.git
+.github
+node_modules
+.next
+app
+blindspot_Demo
+design
+docs
+.claude
+.claude-flow
+.playwright-mcp
+memory
+*.tsbuildinfo
+.env*

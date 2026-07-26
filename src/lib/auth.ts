@@ -35,7 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
     // Magic-link email — only active when key is configured
     ...(process.env.AUTH_RESEND_KEY
-      ? [Resend({ from: 'Blindspot <noreply@blindspot.app>' })]
+      ? [Resend({ from: 'onboarding@resend.dev' })]
       : []),
     // Google OAuth — only active when credentials are configured
     ...(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET

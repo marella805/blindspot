@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 
 const IS_DEV = process.env.NODE_ENV === 'development'
-const HAS_GOOGLE = !!(process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED)
 
 function GoogleIcon() {
   return (
@@ -85,9 +84,8 @@ export default function LoginPage() {
       </div>
 
       {/* Google OAuth button */}
-      {HAS_GOOGLE && (
-        <>
-          <button
+      <>
+        <button
             type="button"
             onClick={handleGoogle}
             disabled={googleLoading}
@@ -118,8 +116,7 @@ export default function LoginPage() {
             <span style={{ fontSize: 12, color: 'var(--fg-muted)', whiteSpace: 'nowrap' }}>or continue with email</span>
             <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
           </div>
-        </>
-      )}
+      </>
 
       <form
         onSubmit={IS_DEV ? handleDevLogin : handleMagicLink}

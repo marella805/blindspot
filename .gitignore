@@ -29,6 +29,10 @@
 *.tsbuildinfo
 /blindspot_Demo/
 
+# macOS Finder duplicates ("file 2.ext")
+* 2
+* 2.*
+
 # local tooling
 .claude/
 .claude-flow/

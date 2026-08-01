@@ -1,23 +1,18 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { decisions, patternAlerts, users } from '@/lib/db/schema'
+import { decisions, patternAlerts } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 import { LogScreen } from '@/components/log-screen'
 import type { AppData } from '@/types'
 
 export default async function LogPage() {
-  const session = await auth()
-  if (!session?.user?.id) redirect('/login')
+  const user = await getUser()
+  if (!user) redirect('/login')
 
-  const userId = session.user.id
+  const userId = user.id
 
-  // Gate: send new users through profile setup before they see the log
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, userId),
-    columns: { onboardingCompleted: true, calibration: true, name: true },
-  })
-  if (!user?.onboardingCompleted) redirect('/profile')
+  if (!user.onboardingCompleted) redirect('/profile')
 
   const [userDecisions, userAlerts] = await Promise.all([
     db.query.decisions.findMany({
@@ -40,8 +35,8 @@ export default async function LogPage() {
 
   const data: AppData = {
     profile: {
-      name: session.user.name ?? '',
-      initials: (session.user.name ?? '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+      name: user.name ?? '',
+      initials: (user.name ?? '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
       role: '',
       decisionContext: '',
       calibration: 0,

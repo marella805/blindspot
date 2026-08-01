@@ -1,14 +1,14 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { decisions, decisionOptions, reflections } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function GET() {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const rows = await db.query.decisions.findMany({
-    where: eq(decisions.userId, session.user.id),
+    where: eq(decisions.userId, user.id),
     with: {
       options: true,
       recommendations: {
@@ -23,15 +23,15 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const body = await req.json()
   const { title, category, options = [] } = body
 
   const [decision] = await db
     .insert(decisions)
-    .values({ userId: session.user.id, title, category })
+    .values({ userId: user.id, title, category })
     .returning()
 
   if (options.length > 0) {

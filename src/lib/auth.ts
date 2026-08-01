@@ -1,45 +1,22 @@
-import NextAuth from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
-import Resend from 'next-auth/providers/resend'
-import Google from 'next-auth/providers/google'
-import { DrizzleAdapter } from '@auth/drizzle-adapter'
-import { eq } from 'drizzle-orm'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { db } from './db'
-import { accounts, users, verificationTokens } from './db/schema'
-import { authConfig } from './auth.config'
+import { users } from './db/schema'
+import { eq } from 'drizzle-orm'
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    verificationTokensTable: verificationTokens,
-  }),
-  providers: [
-    // Dev-only instant login — skipped in production
-    Credentials({
-      id: 'dev',
-      name: 'Dev Login',
-      credentials: { email: { label: 'Email', type: 'email' } },
-      async authorize(credentials) {
-        if (process.env.NODE_ENV !== 'development') return null
-        const email = credentials?.email as string | undefined
-        if (!email?.includes('@')) return null
+export async function getUser() {
+  const { userId: clerkId } = await auth()
+  if (!clerkId) return null
 
-        let user = await db.query.users.findFirst({ where: eq(users.email, email) })
-        if (!user) {
-          ;[user] = await db.insert(users).values({ email }).returning()
-        }
-        return { id: user.id, email: user.email, name: user.name ?? email }
-      },
-    }),
-    // Magic-link email — only active when key is configured
-    ...(process.env.AUTH_RESEND_KEY
-      ? [Resend({ from: 'onboarding@resend.dev' })]
-      : []),
-    // Google OAuth — only active when credentials are configured
-    ...(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
-      ? [Google]
-      : []),
-  ],
-})
+  let user = await db.query.users.findFirst({
+    where: eq(users.clerkId, clerkId),
+  })
+
+  if (!user) {
+    const clerkUser = await currentUser()
+    const email = clerkUser?.emailAddresses[0]?.emailAddress ?? ''
+    const name = [clerkUser?.firstName, clerkUser?.lastName].filter(Boolean).join(' ') || null
+    ;[user] = await db.insert(users).values({ clerkId, email, name }).returning()
+  }
+
+  return user
+}

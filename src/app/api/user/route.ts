@@ -1,14 +1,14 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function GET() {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const user = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
+    where: eq(users.id, user.id),
   })
   if (!user) return new Response(null, { status: 404 })
 
@@ -16,8 +16,8 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const body = await req.json()
   const { name, initials, role, decisionContext, profileAnswers, onboardingCompleted } = body
@@ -35,7 +35,7 @@ export async function PATCH(req: Request) {
       }),
       updatedAt: new Date(),
     })
-    .where(eq(users.id, session.user.id))
+    .where(eq(users.id, user.id))
     .returning()
 
   return Response.json(updated)

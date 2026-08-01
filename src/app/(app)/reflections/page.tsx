@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { decisions, patternAlerts } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
@@ -7,10 +7,10 @@ import { Reflections } from '@/components/reflections'
 import type { AppData } from '@/types'
 
 export default async function ReflectionsPage() {
-  const session = await auth()
-  if (!session?.user?.id) redirect('/login')
+  const user = await getUser()
+  if (!user) redirect('/login')
 
-  const userId = session.user.id
+  const userId = user.id
 
   const [userDecisions, userAlerts] = await Promise.all([
     db.query.decisions.findMany({

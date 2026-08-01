@@ -15,6 +15,13 @@
       "when": 1784991562502,
       "tag": "0001_daily_mother_askani",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785597697558,
+      "tag": "0002_common_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

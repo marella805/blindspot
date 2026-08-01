@@ -1,28 +1,20 @@
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { users, reflections, decisions, patternAlerts } from '@/lib/db/schema'
 import { eq, isNull } from 'drizzle-orm'
 import { AppShell } from '@/components/app-shell'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-  if (!session?.user?.id) redirect('/login')
+  const user = await getUser()
+  if (!user) redirect('/login')
 
-  const userId = session.user.id
+  const userId = user.id
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, userId),
-  })
-
-  // Redirect to profile onboarding if role is not set
-  // (skip redirect if already on profile page to avoid infinite loop)
-  // This is handled client-side in the AppShell for simplicity
-
-  const userDecisionIds = user ? (await db.query.decisions.findMany({
+  const userDecisionIds = (await db.query.decisions.findMany({
     where: eq(decisions.userId, userId),
     columns: { id: true },
-  })).map(d => d.id) : []
+  })).map(d => d.id)
 
   const [pendingReflections, activePatternCount] = await Promise.all([
     userDecisionIds.length > 0
@@ -38,9 +30,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <AppShell
       userId={userId}
-      userName={user?.name ?? session.user.name ?? ''}
-      initials={user?.initials ?? undefined}
-      calibration={user?.calibration ?? 0}
+      userName={user.name ?? ''}
+      initials={user.initials ?? undefined}
+      calibration={user.calibration ?? 0}
       pendingReflections={pendingReflections}
       activePatterns={activePatternCount}
     >

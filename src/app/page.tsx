@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
@@ -21,8 +21,8 @@ const FEATURES = [
 ]
 
 export default async function RootPage() {
-  const session = await auth()
-  if (session?.user?.id) redirect('/log')
+  const user = await getUser()
+  if (user) redirect('/log')
 
   return (
     <div style={{

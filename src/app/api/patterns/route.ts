@@ -1,14 +1,14 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { patternAlerts } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function GET() {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const alerts = await db.query.patternAlerts.findMany({
-    where: eq(patternAlerts.userId, session.user.id),
+    where: eq(patternAlerts.userId, user.id),
     with: {
       patternType: true,
       decisions: {

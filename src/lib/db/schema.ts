@@ -10,8 +10,6 @@ import {
   primaryKey,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import type { AdapterAccountType } from 'next-auth/adapters'
-
 // ── Enums ─────────────────────────────────────────────────────────────────────
 
 export const categoryEnum = pgEnum('category', [
@@ -52,6 +50,7 @@ export const intervalLabelEnum = pgEnum('interval_label', [
 
 export const users = pgTable('users', {
   id:                  uuid('id').primaryKey().defaultRandom(),
+  clerkId:             text('clerk_id').unique(),
   email:               text('email').notNull().unique(),
   emailVerified:       timestamp('email_verified', { mode: 'date' }),
   name:                text('name'),

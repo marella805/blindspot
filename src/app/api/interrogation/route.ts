@@ -1,6 +1,6 @@
 import { streamText } from 'ai'
 import { groq } from '@/lib/ai'
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { decisions, interrogationSessions } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
@@ -81,8 +81,8 @@ ${profileContext}${patternContext}`
 }
 
 export async function POST(req: Request) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const body = await req.json()
   const {
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
   // Legacy path: sessionId not yet provided — create session inline
   if (!sessionId && decisionId) {
     const owned = await db.query.decisions.findFirst({
-      where: and(eq(decisions.id, decisionId), eq(decisions.userId, session.user.id)),
+      where: and(eq(decisions.id, decisionId), eq(decisions.userId, user.id)),
     })
     if (!owned) return new Response(null, { status: 404 })
 

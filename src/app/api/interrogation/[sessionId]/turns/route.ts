@@ -1,11 +1,11 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { interrogationSessions } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function POST(req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const { sessionId } = await params
 
@@ -14,7 +14,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
     with: { decision: { columns: { userId: true } } },
   })
 
-  if (!interrogationSession || interrogationSession.decision.userId !== session.user.id) {
+  if (!interrogationSession || interrogationSession.decision.userId !== user.id) {
     return new Response(null, { status: 404 })
   }
 

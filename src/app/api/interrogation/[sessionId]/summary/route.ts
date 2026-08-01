@@ -1,7 +1,7 @@
 import { generateObject } from 'ai'
 import { groq } from '@/lib/ai'
 import { logTokenUsage } from '@/lib/token-tracker'
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { recommendations, interrogationSessions, patternAlerts, patternAlertDecisions, patternTypes } from '@/lib/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
@@ -93,8 +93,8 @@ async function classifyAndUpdatePatterns(
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const { sessionId } = await params
 
@@ -102,7 +102,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
     where: eq(interrogationSessions.id, sessionId),
     with: { decision: { columns: { userId: true, id: true } } },
   })
-  if (!interrogationSession || interrogationSession.decision.userId !== session.user.id) {
+  if (!interrogationSession || interrogationSession.decision.userId !== user.id) {
     return new Response(null, { status: 404 })
   }
 
@@ -133,7 +133,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
   // Fire-and-forget pattern classification
   classifyAndUpdatePatterns(
     interrogationSession.decision.id,
-    session.user.id,
+    user.id,
     transcript,
     object
   ).catch(console.error)

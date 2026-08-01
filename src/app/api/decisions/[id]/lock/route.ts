@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { decisions } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
@@ -10,11 +10,11 @@ async function getOwned(id: string, userId: string) {
 }
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const { id } = await params
-  const owned = await getOwned(id, session.user.id)
+  const owned = await getOwned(id, user.id)
   if (!owned) return new Response(null, { status: 404 })
 
   const [updated] = await db
@@ -27,11 +27,11 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  if (!session?.user?.id) return new Response(null, { status: 401 })
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
 
   const { id } = await params
-  const owned = await getOwned(id, session.user.id)
+  const owned = await getOwned(id, user.id)
   if (!owned) return new Response(null, { status: 404 })
 
   const [updated] = await db

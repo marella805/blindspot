@@ -87,14 +87,15 @@ function DecisionCard({ d, onDeleted }: { d: DecisionEntry; onDeleted: () => voi
         title="Delete decision"
         style={{
           flexShrink: 0, width: 36, height: 36, borderRadius: 'var(--radius-md)',
-          border: 'none', cursor: 'pointer', marginRight: 12,
+          border: `1px solid ${confirming ? 'rgba(192,57,43,0.4)' : 'var(--border)'}`,
+          cursor: 'pointer', marginRight: 12,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: confirming ? 'rgba(192,57,43,0.1)' : 'transparent',
-          color: confirming ? '#C0392B' : 'var(--fg-muted)',
-          transition: 'background 150ms, color 150ms',
+          background: confirming ? 'rgba(192,57,43,0.1)' : 'var(--muted)',
+          color: confirming ? '#C0392B' : 'var(--fg)',
+          transition: 'background 150ms, color 150ms, border-color 150ms',
         }}
       >
-        <i className="ph ph-trash" style={{ fontSize: 16 }} />
+        <i className="ph-fill ph-trash" style={{ fontSize: 15 }} />
       </button>
       </div>
 

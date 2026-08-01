@@ -1,7 +1,6 @@
 import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { decisions, decisionOptions, interrogationSessions, reflections, users } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { decisions, decisionOptions, interrogationSessions, reflections } from '@/lib/db/schema'
 
 const VALID_CATEGORIES = ['career','financial','relationship','health','education','housing','business','personal_growth','other'] as const
 type Category = typeof VALID_CATEGORIES[number]
@@ -24,12 +23,6 @@ export async function POST(req: Request) {
   }
 
   const resolvedCategory: Category = VALID_CATEGORIES.includes(category) ? category : 'other'
-
-  // Snapshot the user's current profile answers
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, user.id),
-    columns: { profileAnswers: true },
-  })
 
   const [decision] = await db
     .insert(decisions)

@@ -7,11 +7,6 @@ export async function GET() {
   const user = await getUser()
   if (!user) return new Response(null, { status: 401 })
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, user.id),
-  })
-  if (!user) return new Response(null, { status: 404 })
-
   return Response.json(user)
 }
 

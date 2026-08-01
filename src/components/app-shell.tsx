@@ -136,11 +136,17 @@ export function AppShell({
           </div>
         </header>
 
-        <div className="content">
-          <div className="content-inner animate-enter">
+        {pathname.startsWith('/interrogation') ? (
+          <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             {children}
           </div>
-        </div>
+        ) : (
+          <div className="content">
+            <div className="content-inner animate-enter">
+              {children}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

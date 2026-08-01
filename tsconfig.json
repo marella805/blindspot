@@ -38,6 +38,7 @@
     "node_modules",
     "node_modules.nosync",
     "app",
+    "vite-app",
     "server"
   ]
 }

@@ -3,6 +3,7 @@
 node_modules
 .next
 app
+vite-app
 blindspot_Demo
 design
 .claude

@@ -29,6 +29,18 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return Response.json(decision)
 }
 
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getUser()
+  if (!user) return new Response(null, { status: 401 })
+
+  const { id } = await params
+  const owned = await getOwned(id, user.id)
+  if (!owned) return new Response(null, { status: 404 })
+
+  await db.delete(decisions).where(eq(decisions.id, id))
+  return new Response(null, { status: 204 })
+}
+
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getUser()
   if (!user) return new Response(null, { status: 401 })

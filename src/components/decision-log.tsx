@@ -3,6 +3,11 @@
 import { useState, useEffect, useRef } from 'react'
 import type { AppData, DecisionEntry } from '@/types'
 
+async function deleteDecision(id: string) {
+  const res = await fetch(`/api/decisions/${id}`, { method: 'DELETE' })
+  if (!res.ok) throw new Error('Failed to delete')
+}
+
 const CATEGORY_ICONS: Record<string, string> = {
   career: 'ph-briefcase', financial: 'ph-coins', relationship: 'ph-heart',
   health: 'ph-heartbeat', education: 'ph-graduation-cap', housing: 'ph-house',
@@ -13,10 +18,23 @@ function fmt(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function DecisionCard({ d }: { d: DecisionEntry }) {
+function DecisionCard({ d, onDeleted }: { d: DecisionEntry; onDeleted: () => void }) {
   const [open, setOpen] = useState(false)
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const icon = CATEGORY_ICONS[d.category] ?? 'ph-dots-three'
   const isLocked = !!d.lockedAt
+
+  async function handleDelete() {
+    setDeleting(true)
+    try {
+      await deleteDecision(d.id)
+      onDeleted()
+    } catch {
+      setDeleting(false)
+      setConfirming(false)
+    }
+  }
 
   return (
     <div style={{
@@ -26,11 +44,12 @@ function DecisionCard({ d }: { d: DecisionEntry }) {
       overflow: 'hidden',
     }}>
       {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
         style={{
-          width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center',
+          flex: 1, textAlign: 'left', display: 'flex', alignItems: 'center',
           gap: 14, padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer',
         }}
       >
@@ -62,6 +81,60 @@ function DecisionCard({ d }: { d: DecisionEntry }) {
           style={{ fontSize: 15, color: 'var(--fg-muted)', flexShrink: 0, transition: 'transform 200ms' }}
         />
       </button>
+      <button
+        type="button"
+        onClick={() => setConfirming(c => !c)}
+        title="Delete decision"
+        style={{
+          flexShrink: 0, width: 36, height: 36, borderRadius: 'var(--radius-md)',
+          border: 'none', cursor: 'pointer', marginRight: 12,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: confirming ? 'rgba(192,57,43,0.1)' : 'transparent',
+          color: confirming ? '#C0392B' : 'var(--fg-muted)',
+          transition: 'background 150ms, color 150ms',
+        }}
+      >
+        <i className="ph ph-trash" style={{ fontSize: 16 }} />
+      </button>
+      </div>
+
+      {/* Inline delete confirmation */}
+      {confirming && (
+        <div style={{
+          borderTop: '1px solid var(--border)',
+          padding: '12px 18px',
+          background: 'rgba(192,57,43,0.04)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+        }}>
+          <span style={{ flex: 1, fontSize: 13.5, color: 'var(--fg)' }}>
+            Delete this decision? This can&apos;t be undone.
+          </span>
+          <button
+            type="button"
+            onClick={() => setConfirming(false)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--fg-muted)', padding: '0 4px' }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              height: 32, padding: '0 14px', borderRadius: 'var(--radius-md)',
+              border: 'none', cursor: deleting ? 'not-allowed' : 'pointer',
+              background: '#C0392B', color: '#fff', fontSize: 13, fontWeight: 500,
+              opacity: deleting ? 0.6 : 1,
+            }}
+          >
+            <i className="ph-fill ph-trash" style={{ fontSize: 13 }} />
+            {deleting ? 'Deleting…' : 'Delete'}
+          </button>
+        </div>
+      )}
 
       {/* Expanded detail */}
       {open && (
@@ -142,6 +215,7 @@ function DecisionCard({ d }: { d: DecisionEntry }) {
 interface Props {
   data: AppData
   onStartInterrogation: () => void
+  onDeleteDecision: () => void
 }
 
 // ── Count-up animation ──────────────────────────────────────────────────────
@@ -165,7 +239,7 @@ function CountUp({ to, suffix = '', duration = 1100 }: { to: number; suffix?: st
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export function DecisionLog({ data, onStartInterrogation }: Props) {
+export function DecisionLog({ data, onStartInterrogation, onDeleteDecision }: Props) {
   const { decisions, reflections, patterns, profile } = data
   const isFresh = decisions.length === 0
 
@@ -317,7 +391,7 @@ export function DecisionLog({ data, onStartInterrogation }: Props) {
       {/* ── Decision List ── */}
       {decisions.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {decisions.map(d => <DecisionCard key={d.id} d={d} />)}
+          {decisions.map(d => <DecisionCard key={d.id} d={d} onDeleted={onDeleteDecision} />)}
         </div>
       )}
 

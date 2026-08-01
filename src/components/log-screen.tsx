@@ -10,6 +10,7 @@ export function LogScreen({ data }: { data: AppData }) {
     <DecisionLog
       data={data}
       onStartInterrogation={() => router.push('/interrogation')}
+      onDeleteDecision={() => router.refresh()}
     />
   )
 }

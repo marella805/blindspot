@@ -447,7 +447,7 @@ export default function DemoPage() {
           ) : (
             <div className="content">
               <div className="content-inner animate-enter" key={screen}>
-                {screen === 'log'         && <DecisionLog data={activeData} onStartInterrogation={handleStartInterrogation} />}
+                {screen === 'log'         && <DecisionLog data={activeData} onStartInterrogation={handleStartInterrogation} onDeleteDecision={() => {}} />}
                 {screen === 'reflections' && <Reflections data={activeData} />}
                 {screen === 'patterns'    && <Patterns data={activeData} />}
                 {screen === 'profile'     && <Profile data={activeData} isFresh={isFresh} />}

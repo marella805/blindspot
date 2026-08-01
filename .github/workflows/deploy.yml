@@ -33,6 +33,23 @@ jobs:
             --build-arg NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/profile \
             .
 
+      - name: Recover DATABASE_URL from running revision
+        id: recover_db
+        run: |
+          # Pull DATABASE_URL from the most recently active (healthy) revision
+          DB_URL=$(az containerapp revision list \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --query "sort_by([?properties.healthState=='Healthy'], &properties.createdTime)[-1].properties.template.containers[0].env[?name=='DATABASE_URL'].value | [0]" \
+            -o tsv 2>/dev/null || true)
+
+          if [ -z "$DB_URL" ]; then
+            echo "WARNING: Could not recover DATABASE_URL from a healthy revision"
+          else
+            echo "Recovered DATABASE_URL from healthy revision"
+            echo "DB_URL=$DB_URL" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy to Container App
         run: |
           az containerapp update \
@@ -40,7 +57,10 @@ jobs:
             --resource-group rg-students-platform \
             --image ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STUDENT }}:${{ github.sha }} \
             --set-env-vars \
+              ${DB_URL:+"DATABASE_URL=$DB_URL"} \
               "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" \
               "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" \
               "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" \
               "CRON_SECRET=${{ secrets.CRON_SECRET }}"
+        env:
+          DB_URL: ${{ steps.recover_db.outputs.DB_URL }}

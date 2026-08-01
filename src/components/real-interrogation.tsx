@@ -107,7 +107,16 @@ export function RealInterrogation({ onComplete }: Props) {
       .catch(() => {})
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { messages, input, handleInputChange, handleSubmit, append, isLoading } = useChat({
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<{ stop: () => void } | null>(null)
+  // Check support client-side only
+  const [hasSpeech, setHasSpeech] = useState(false)
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setHasSpeech(typeof window !== 'undefined' && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition))
+  }, [])
+
+  const { messages, input, setInput, handleInputChange, handleSubmit, append, isLoading } = useChat({
     api: '/api/interrogation',
     body: {
       decisionTitle: title,
@@ -121,6 +130,32 @@ export function RealInterrogation({ onComplete }: Props) {
       setTimeout(() => textareaRef.current?.focus(), 100)
     },
   })
+
+  function toggleSpeech() {
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+      return
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition
+    if (!SR) return
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recognition: any = new SR()
+    recognition.continuous = true
+    recognition.interimResults = true
+    recognition.lang = 'en-US'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      const transcript = Array.from(e.results).map((r: any) => r[0].transcript).join('')
+      setInput(transcript)
+    }
+    recognition.onend = () => setIsListening(false)
+    recognition.onerror = () => setIsListening(false)
+    recognitionRef.current = recognition
+    recognition.start()
+    setIsListening(true)
+  }
 
   // Exclude the auto-sent initial message from user response counts
   const userResponses = messages.filter(m => m.role === 'user').slice(1)
@@ -173,6 +208,8 @@ export function RealInterrogation({ onComplete }: Props) {
 
   async function handleSave() {
     if (!sessionData) return
+    // Stop any active recording before saving
+    if (isListening) { recognitionRef.current?.stop(); setIsListening(false) }
     setSaveError(false)
     setPhase('saving')
     try {
@@ -616,27 +653,60 @@ export function RealInterrogation({ onComplete }: Props) {
           )}
 
           {/* Answer textarea + send */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <textarea
-              ref={textareaRef}
-              rows={5}
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Your answer…"
-              disabled={isLoading}
-              style={{
-                padding: '14px 16px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--input)',
-                background: 'var(--card)',
-                fontSize: 15,
-                lineHeight: '24px',
-                resize: 'none',
-                outline: 'none',
-                color: 'var(--fg)',
-                opacity: isLoading ? 0.6 : 1,
-              }}
-            />
+          <form onSubmit={e => { if (isListening) { recognitionRef.current?.stop(); setIsListening(false) } handleSubmit(e) }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ position: 'relative' }}>
+              <textarea
+                ref={textareaRef}
+                rows={5}
+                value={input}
+                onChange={handleInputChange}
+                placeholder={isListening ? 'Listening…' : 'Your answer…'}
+                disabled={isLoading}
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  paddingRight: hasSpeech ? 52 : 16,
+                  borderRadius: 'var(--radius-md)',
+                  border: `1px solid ${isListening ? 'var(--primary)' : 'var(--input)'}`,
+                  background: 'var(--card)',
+                  fontSize: 15,
+                  lineHeight: '24px',
+                  resize: 'none',
+                  outline: 'none',
+                  color: 'var(--fg)',
+                  opacity: isLoading ? 0.6 : 1,
+                  transition: 'border-color 150ms',
+                }}
+              />
+              {hasSpeech && (
+                <button
+                  type="button"
+                  onClick={toggleSpeech}
+                  disabled={isLoading}
+                  title={isListening ? 'Stop recording' : 'Speak your answer'}
+                  style={{
+                    position: 'absolute',
+                    right: 10,
+                    top: 10,
+                    width: 34,
+                    height: 34,
+                    borderRadius: '50%',
+                    border: 'none',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 16,
+                    background: isListening ? 'var(--primary)' : 'var(--muted)',
+                    color: isListening ? '#fff' : 'var(--fg-muted)',
+                    transition: 'background 150ms, color 150ms',
+                    animation: isListening ? 'pulse 1.4s ease-in-out infinite' : 'none',
+                  }}
+                >
+                  <i className={`ph-fill ph-microphone${isListening ? '' : '-slash'}`} />
+                </button>
+              )}
+            </div>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <button
                 type="submit"

@@ -1,0 +1,52 @@
+name: Remove PostgreSQL Service Connector (one-off)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: List service connectors
+        run: |
+          echo "=== Current service connectors ==="
+          az containerapp connection list \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --query "[].{name:name, type:authType}" \
+            -o table || echo "None found or command not supported"
+
+      - name: Delete PostgreSQL connector
+        run: |
+          CONN=$(az containerapp connection list \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --query "[?contains(name, 'postgres') || contains(name, 'sql') || contains(name, 'db')].name | [0]" \
+            -o tsv 2>/dev/null || true)
+
+          if [ -z "$CONN" ]; then
+            echo "No matching connector found by name — listing all connectors:"
+            az containerapp connection list \
+              --name ca-${{ vars.STUDENT }} \
+              --resource-group rg-students-platform \
+              --query "[].name" -o tsv
+          else
+            echo "Deleting connector: $CONN"
+            az containerapp connection delete \
+              --name ca-${{ vars.STUDENT }} \
+              --resource-group rg-students-platform \
+              --connection "$CONN" \
+              --yes
+            echo "Deleted."
+          fi

@@ -3,8 +3,8 @@ import { groq } from '@/lib/ai'
 import { logTokenUsage } from '@/lib/token-tracker'
 import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { recommendations, interrogationSessions, patternAlerts, patternAlertDecisions, patternTypes } from '@/lib/db/schema'
-import { eq, and, inArray } from 'drizzle-orm'
+import { recommendations, interrogationSessions, patternAlerts, patternAlertDecisions, patternTypes, decisions } from '@/lib/db/schema'
+import { eq, and, inArray, sql } from 'drizzle-orm'
 import { z } from 'zod'
 
 const PATTERN_SLUGS = [
@@ -129,6 +129,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
       evidence: object.evidence,
     })
     .returning()
+
+  // Increment interrogation count on the decision
+  await db
+    .update(decisions)
+    .set({ interrogationCount: sql`${decisions.interrogationCount} + 1`, updatedAt: new Date() })
+    .where(eq(decisions.id, interrogationSession.decision.id))
 
   // Fire-and-forget pattern classification
   classifyAndUpdatePatterns(

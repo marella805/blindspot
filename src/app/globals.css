@@ -1625,3 +1625,34 @@ textarea { resize: none; }
 }
 .ai-send:hover { background: var(--primary-hover); }
 .ai-send:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Decision Interrogation layout ── */
+.di-root {
+  display: flex;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.di-main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.di-main-inner {
+  width: 100%;
+  padding: 44px 40px;
+}
+
+.di-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: linear-gradient(165deg, #1e1c18 0%, #141210 55%, #0e0c0a 100%);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  overflow-y: auto;
+}
+
+.di-sidebar-inner {
+  padding: 28px 22px;
+}

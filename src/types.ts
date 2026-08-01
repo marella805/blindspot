@@ -20,7 +20,7 @@ export interface DecisionOption {
 export interface Recommendation {
   answer: string
   rationale: string
-  evidence: string[]
+  evidence: { pattern: string; finding: string }[]
 }
 
 export interface DecisionEntry {

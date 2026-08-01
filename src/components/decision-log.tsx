@@ -122,11 +122,13 @@ function DecisionCard({ d }: { d: DecisionEntry }) {
               <p style={{ fontSize: 14.5, fontWeight: 500, color: 'var(--blue-ink-900)', margin: '0 0 6px' }}>{d.recommendation.answer}</p>
               <p style={{ fontSize: 13.5, lineHeight: '21px', color: 'var(--blue-ink-800)', margin: 0 }}>{d.recommendation.rationale}</p>
               {d.recommendation.evidence.length > 0 && (
-                <ul style={{ margin: '10px 0 0', paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {d.recommendation.evidence.map((e, i) => (
-                    <li key={i} style={{ fontSize: 13, color: 'var(--blue-ink-700)', lineHeight: '20px' }}>{e}</li>
+                    <div key={i} style={{ fontSize: 13, color: 'var(--blue-ink-700)', lineHeight: '20px' }}>
+                      <span style={{ fontWeight: 600 }}>{e.pattern}:</span> {e.finding}
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </div>
           )}

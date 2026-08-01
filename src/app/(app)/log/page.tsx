@@ -60,7 +60,7 @@ export default async function LogPage() {
         ? {
             answer: d.recommendations[0].answer,
             rationale: d.recommendations[0].rationale,
-            evidence: d.recommendations[0].evidence as string[],
+            evidence: (d.recommendations[0].evidence ?? []) as { pattern: string; finding: string }[],
           }
         : undefined,
       createdAt: d.createdAt.toISOString(),

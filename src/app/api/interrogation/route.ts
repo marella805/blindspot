@@ -3,7 +3,7 @@ import { groq } from '@/lib/ai'
 import { getUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { decisions, interrogationSessions } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, inArray, isNotNull, ne } from 'drizzle-orm'
 import { logTokenUsage } from '@/lib/token-tracker'
 import type { PatternAlert } from '@/types'
 
@@ -80,6 +80,41 @@ Do NOT summarize, congratulate, or offer opinions. Only ask the next question. A
 ${profileContext}${patternContext}`
 }
 
+async function fetchPreviousSessionContext(userId: string, currentSessionId: string): Promise<string> {
+  const userDecisions = await db.query.decisions.findMany({
+    where: eq(decisions.userId, userId),
+    columns: { id: true },
+  })
+  if (userDecisions.length === 0) return ''
+
+  const decisionIds = userDecisions.map(d => d.id)
+  const prevSessions = await db.query.interrogationSessions.findMany({
+    where: and(
+      inArray(interrogationSessions.decisionId, decisionIds),
+      isNotNull(interrogationSessions.turns),
+      ne(interrogationSessions.id, currentSessionId),
+    ),
+    with: { decision: { columns: { title: true } } },
+    orderBy: (s, { desc }) => [desc(s.createdAt)],
+    limit: 3,
+  })
+
+  const excerpts = prevSessions
+    .map(s => {
+      const userTurns = ((s.turns ?? []) as { role: string; content: string }[])
+        .filter(t => t.role === 'user')
+        .slice(1)
+      if (userTurns.length === 0) return null
+      const responses = userTurns.map(t => `- ${t.content.slice(0, 180)}`).join('\n')
+      return `Decision: "${s.decision.title}"\n${responses}`
+    })
+    .filter(Boolean)
+
+  if (excerpts.length === 0) return ''
+
+  return `\n\nContext from this user's previous interrogation sessions — use to notice recurring reasoning patterns and calibrate your questions:\n${excerpts.join('\n\n')}`
+}
+
 export async function POST(req: Request) {
   const user = await getUser()
   if (!user) return new Response(null, { status: 401 })
@@ -120,10 +155,12 @@ export async function POST(req: Request) {
     profileAnswers = sess?.profileSnapshot ?? undefined
   }
 
+  const previousContext = sessionId ? await fetchPreviousSessionContext(user.id, sessionId) : ''
+
   const MODEL = 'llama-3.3-70b-versatile'
   const result = streamText({
     model: groq(MODEL),
-    system: buildSystemPrompt({ coachingStyle, profileAnswers, activePatterns, decisionTitle, decisionSummary, decisionOptions }),
+    system: buildSystemPrompt({ coachingStyle, profileAnswers, activePatterns, decisionTitle, decisionSummary, decisionOptions }) + previousContext,
     messages,
     maxTokens: 150,
     onFinish: ({ usage }) => {

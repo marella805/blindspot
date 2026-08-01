@@ -4,7 +4,7 @@ RUN npm install -g pnpm 2>/dev/null || true
 
 # ── deps ──────────────────────────────────────────────────────────────────────
 FROM base AS deps
-COPY package*.json ./
+COPY package*.json .npmrc ./
 RUN npm ci
 
 # ── builder ───────────────────────────────────────────────────────────────────

@@ -1,0 +1,41 @@
+name: Find PostgreSQL resource (one-off)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Find PostgreSQL servers
+        run: |
+          echo "=== PostgreSQL Flexible Servers ==="
+          az postgres flexible-server list \
+            --query "[].{name:name, rg:resourceGroup, fqdn:fullyQualifiedDomainName, adminUser:administratorLogin}" \
+            -o table 2>/dev/null || echo "None found"
+
+          echo ""
+          echo "=== All DB-related resources in rg-students-platform ==="
+          az resource list \
+            --resource-group rg-students-platform \
+            --query "[?contains(type, 'sql') || contains(type, 'postgres') || contains(type, 'db')].{name:name, type:type}" \
+            -o table 2>/dev/null || echo "None found"
+
+          echo ""
+          echo "=== Container App current env vars (names only) ==="
+          az containerapp show \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --query "properties.template.containers[0].env[].name" \
+            -o tsv

@@ -625,9 +625,8 @@ export function RealInterrogation({ onComplete }: Props) {
 
   return (
     <div className="di-root">
-      {/* Left panel — question + answer */}
       <div className="di-main">
-        <div className="di-main-inner">
+        <div className="di-main-inner" style={{ maxWidth: 600 }}>
           <div style={{ marginBottom: 8, fontSize: 13, letterSpacing: '0.03em', color: 'var(--blue-ink-600)', display: 'flex', alignItems: 'center', gap: 7 }}>
             <i className="ph ph-intersect" style={{ fontSize: 15 }} />
             {title}
@@ -741,44 +740,6 @@ export function RealInterrogation({ onComplete }: Props) {
         </div>
       </div>
 
-      {/* Right panel — reasoning ledger */}
-      <div className="di-sidebar">
-        <div className="di-sidebar-inner">
-          <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 16 }}>
-            Reasoning ledger
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {userResponses.map((msg, i) => (
-              <div key={msg.id} style={{ borderLeft: '2px solid rgba(184,209,74,0.4)', paddingLeft: 12 }}>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>
-                  Response {i + 1}
-                </div>
-                <div style={{ fontSize: 13, lineHeight: '20px', color: 'rgba(255,255,255,0.75)' }}>
-                  {msg.content.slice(0, 200)}{msg.content.length > 200 ? '…' : ''}
-                </div>
-              </div>
-            ))}
-
-            {userResponses.length === 0 && (
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
-                Your answers will appear here as you respond.
-              </div>
-            )}
-          </div>
-
-          {userResponses.length >= 3 && (
-            <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-              <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 8 }}>
-                Progress
-              </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
-                {userResponses.length} responses · {canSave ? 'Ready for recommendation' : `${Math.max(0, 3 - userResponses.length)} more to go`}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   )
 }

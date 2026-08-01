@@ -1,0 +1,24 @@
+{
+  "crons": [
+    {
+      "path": "/api/agents/marcus",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/agents/socrates",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/agents/plato",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/agents/seneca",
+      "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/agents/aristotle",
+      "schedule": "0 7 * * 0"
+    }
+  ]
+}

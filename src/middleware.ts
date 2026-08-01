@@ -1,7 +1,7 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const PUBLIC_PATHS = ['/', '/login', '/demo', '/api/auth', '/api/mcp']
+const PUBLIC_PATHS = ['/', '/login', '/demo', '/api/auth', '/api/mcp', '/api/agents']
 
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl

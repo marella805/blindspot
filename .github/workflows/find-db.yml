@@ -18,24 +18,28 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Find PostgreSQL servers
+      - name: Find DB across all resource groups
         run: |
-          echo "=== PostgreSQL Flexible Servers ==="
+          echo "=== All PostgreSQL servers in subscription ==="
           az postgres flexible-server list \
-            --query "[].{name:name, rg:resourceGroup, fqdn:fullyQualifiedDomainName, adminUser:administratorLogin}" \
-            -o table 2>/dev/null || echo "None found"
+            --query "[].{name:name, rg:resourceGroup, fqdn:fullyQualifiedDomainName, admin:administratorLogin}" \
+            -o table 2>/dev/null || echo "None"
 
           echo ""
-          echo "=== All DB-related resources in rg-students-platform ==="
-          az resource list \
-            --resource-group rg-students-platform \
-            --query "[?contains(type, 'sql') || contains(type, 'postgres') || contains(type, 'db')].{name:name, type:type}" \
-            -o table 2>/dev/null || echo "None found"
+          echo "=== All resource groups ==="
+          az group list --query "[].name" -o tsv
 
           echo ""
-          echo "=== Container App current env vars (names only) ==="
+          echo "=== Container App full env (names + secretRef) ==="
           az containerapp show \
             --name ca-${{ vars.STUDENT }} \
             --resource-group rg-students-platform \
-            --query "properties.template.containers[0].env[].name" \
-            -o tsv
+            --query "properties.template.containers[0].env" \
+            -o json
+
+          echo ""
+          echo "=== Container App secrets (names only) ==="
+          az containerapp secret list \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --query "[].name" -o tsv

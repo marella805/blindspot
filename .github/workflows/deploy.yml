@@ -40,7 +40,6 @@ jobs:
             --resource-group rg-students-platform \
             --image ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STUDENT }}:${{ github.sha }} \
             --set-env-vars \
-              "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
               "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" \
               "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" \
               "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" \

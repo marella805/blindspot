@@ -1,0 +1,27 @@
+name: Fix DATABASE_URL (one-off)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Remove empty DATABASE_URL override
+        run: |
+          az containerapp update \
+            --name ca-${{ vars.STUDENT }} \
+            --resource-group rg-students-platform \
+            --remove-env-vars DATABASE_URL
+          echo "Done — DATABASE_URL override removed. Azure Service Connector will re-inject the real value."

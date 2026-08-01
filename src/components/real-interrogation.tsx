@@ -654,30 +654,29 @@ export function RealInterrogation({ onComplete }: Props) {
 
           {/* Answer textarea + send */}
           <form onSubmit={e => { if (isListening) { recognitionRef.current?.stop(); setIsListening(false) } handleSubmit(e) }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ position: 'relative' }}>
-              <textarea
-                ref={textareaRef}
-                rows={5}
-                value={input}
-                onChange={handleInputChange}
-                placeholder={isListening ? 'Listening…' : 'Your answer…'}
-                disabled={isLoading}
-                style={{
-                  width: '100%',
-                  padding: '14px 16px',
-                  paddingRight: hasSpeech ? 52 : 16,
-                  borderRadius: 'var(--radius-md)',
-                  border: `1px solid ${isListening ? 'var(--primary)' : 'var(--input)'}`,
-                  background: 'var(--card)',
-                  fontSize: 15,
-                  lineHeight: '24px',
-                  resize: 'none',
-                  outline: 'none',
-                  color: 'var(--fg)',
-                  opacity: isLoading ? 0.6 : 1,
-                  transition: 'border-color 150ms',
-                }}
-              />
+            <textarea
+              ref={textareaRef}
+              rows={5}
+              value={input}
+              onChange={handleInputChange}
+              placeholder={isListening ? 'Listening… speak your answer' : 'Your answer…'}
+              disabled={isLoading}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                borderRadius: 'var(--radius-md)',
+                border: `1px solid ${isListening ? 'var(--primary)' : 'var(--input)'}`,
+                background: isListening ? 'rgba(59,110,221,0.04)' : 'var(--card)',
+                fontSize: 15,
+                lineHeight: '24px',
+                resize: 'none',
+                outline: 'none',
+                color: 'var(--fg)',
+                opacity: isLoading ? 0.6 : 1,
+                transition: 'border-color 150ms, background 150ms',
+              }}
+            />
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               {hasSpeech && (
                 <button
                   type="button"
@@ -685,29 +684,26 @@ export function RealInterrogation({ onComplete }: Props) {
                   disabled={isLoading}
                   title={isListening ? 'Stop recording' : 'Speak your answer'}
                   style={{
-                    position: 'absolute',
-                    right: 10,
-                    top: 10,
-                    width: 34,
-                    height: 34,
+                    width: 44,
+                    height: 44,
                     borderRadius: '50%',
-                    border: 'none',
+                    border: isListening ? 'none' : '1px solid var(--border)',
                     cursor: isLoading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: 16,
-                    background: isListening ? 'var(--primary)' : 'var(--muted)',
+                    fontSize: 20,
+                    flexShrink: 0,
+                    background: isListening ? 'var(--primary)' : 'var(--card)',
                     color: isListening ? '#fff' : 'var(--fg-muted)',
-                    transition: 'background 150ms, color 150ms',
+                    transition: 'background 150ms, color 150ms, border-color 150ms',
                     animation: isListening ? 'pulse 1.4s ease-in-out infinite' : 'none',
+                    boxShadow: isListening ? '0 0 0 4px rgba(59,110,221,0.18)' : 'none',
                   }}
                 >
-                  <i className={`ph-fill ph-microphone${isListening ? '' : '-slash'}`} />
+                  <i className="ph-fill ph-microphone" />
                 </button>
               )}
-            </div>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <button
                 type="submit"
                 className="btn-lime"

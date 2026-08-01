@@ -1,0 +1,80 @@
+name: Philosopher Agents
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # Marcus — daily morning brief
+    - cron: '0 8 * * *'   # Socrates — daily interrogation nudge
+    - cron: '0 9 * * *'   # Plato — daily reflection reminder
+    - cron: '0 7 * * 1'   # Seneca — Monday weekly digest
+    - cron: '0 7 * * 0'   # Aristotle — Sunday pattern scan
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: Agent to run manually
+        required: true
+        type: choice
+        options: [marcus, socrates, plato, seneca, aristotle]
+
+permissions:
+  contents: read
+
+jobs:
+  marcus:
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.agent == 'marcus') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 7 * * *')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Marcus
+        run: |
+          curl -sf -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://blindspot.apps.human-angle.com/api/agents/marcus"
+
+  socrates:
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.agent == 'socrates') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 8 * * *')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Socrates
+        run: |
+          curl -sf -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://blindspot.apps.human-angle.com/api/agents/socrates"
+
+  plato:
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.agent == 'plato') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 9 * * *')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Plato
+        run: |
+          curl -sf -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://blindspot.apps.human-angle.com/api/agents/plato"
+
+  seneca:
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.agent == 'seneca') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 7 * * 1')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Seneca
+        run: |
+          curl -sf -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://blindspot.apps.human-angle.com/api/agents/seneca"
+
+  aristotle:
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.agent == 'aristotle') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 7 * * 0')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Aristotle
+        run: |
+          curl -sf -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://blindspot.apps.human-angle.com/api/agents/aristotle"

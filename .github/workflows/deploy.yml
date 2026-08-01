@@ -27,6 +27,10 @@ jobs:
           az acr build \
             --registry ${{ vars.ACR_NAME }} \
             --image ${{ vars.STUDENT }}:${{ github.sha }} \
+            --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
+            --build-arg NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login \
+            --build-arg NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/log \
+            --build-arg NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/profile \
             .
 
       - name: Deploy to Container App
@@ -35,4 +39,9 @@ jobs:
             --name ca-${{ vars.STUDENT }} \
             --resource-group rg-students-platform \
             --image ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STUDENT }}:${{ github.sha }} \
-            --set-env-vars "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" "AUTH_RESEND_KEY=${{ secrets.AUTH_RESEND_KEY }}" "AUTH_GOOGLE_ID=${{ secrets.AUTH_GOOGLE_ID }}" "AUTH_GOOGLE_SECRET=${{ secrets.AUTH_GOOGLE_SECRET }}"
+            --set-env-vars \
+              "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+              "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" \
+              "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" \
+              "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" \
+              "CRON_SECRET=${{ secrets.CRON_SECRET }}"

@@ -224,13 +224,26 @@ const PUSH_WORDS  = ['', 'Light touch', 'Gentle', 'Balanced', 'Firm', 'Adversari
 export function Profile({ data, isFresh, savedAnswers }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<'questions' | 'summary' | 'view'>(isFresh ? 'questions' : 'view')
+  // nameStep = true means we're on the identity (name/role) step before the diagnostic questions
+  const [nameStep, setNameStep] = useState(true)
   const [step, setStep] = useState(0)
+  const [name, setName] = useState(data.profile.name)
+  const [role, setRole] = useState(data.profile.role)
   const [answers, setAnswers] = useState<Answers>(emptyAnswers())
   const [coachingStyle, setCoachingStyle] = useState<CoachingStyle>('advisor')
   const [saving, setSaving] = useState(false)
+  // view mode inline editing
+  const [editingIdentity, setEditingIdentity] = useState(false)
+  const [editName, setEditName] = useState(data.profile.name)
+  const [editRole, setEditRole] = useState(data.profile.role)
+  const [savingIdentity, setSavingIdentity] = useState(false)
 
   const q = QUESTIONS[step]
-  const answered = isAnswered(q, answers)
+  const answered = nameStep ? name.trim().length > 0 : isAnswered(q, answers)
+
+  const totalSteps = QUESTIONS.length + 1
+  const currentStepNum = nameStep ? 0 : step + 1
+  const progress = Math.round(((currentStepNum + (answered ? 1 : 0.35)) / totalSteps) * 100)
 
   function toggleMulti(qid: string, key: string) {
     const cur = (answers[qid as keyof Answers] as string[])
@@ -245,18 +258,24 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
 
   async function goNext() {
     if (!answered) return
+    if (nameStep) {
+      setNameStep(false)
+      return
+    }
     if (step < QUESTIONS.length - 1) {
       setStep(step + 1)
     } else if (isFresh) {
-      // Save onboarding completion inline so the /log gate is unlocked
-      // before the summary renders — prevents the sidebar nav from bouncing
-      // the user back to /profile when they haven't clicked "Save profile" yet.
       setSaving(true)
       try {
         await fetch('/api/user', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ profileAnswers: answers, onboardingCompleted: true }),
+          body: JSON.stringify({
+            name: name.trim(),
+            role: role.trim() || null,
+            profileAnswers: answers,
+            onboardingCompleted: true,
+          }),
         })
       } finally {
         setSaving(false)
@@ -268,19 +287,37 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
   }
 
   function goBack() {
-    if (step > 0) setStep(step - 1)
+    if (!nameStep && step === 0) {
+      setNameStep(true)
+    } else if (!nameStep && step > 0) {
+      setStep(step - 1)
+    }
   }
 
   function restart() {
+    setNameStep(true)
     setAnswers(emptyAnswers())
     setStep(0)
     setMode('questions')
   }
 
+  async function saveIdentityEdit() {
+    setSavingIdentity(true)
+    await fetch('/api/user', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: editName.trim(), role: editRole.trim() || null }),
+    })
+    setSavingIdentity(false)
+    setEditingIdentity(false)
+    // Optimistically update displayed values
+    data.profile.name = editName.trim()
+    data.profile.role = editRole.trim()
+    data.profile.initials = editName.trim().split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()
+  }
+
   // ── Questions ─────────────────────────────────────────────────────────────
   if (mode === 'questions') {
-    const progress = Math.round(((step + (answered ? 1 : 0.35)) / QUESTIONS.length) * 100)
-
     return (
       <div className="screen animate-enter" style={{ maxWidth: 660 }}>
         {/* Progress */}
@@ -290,14 +327,44 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
               <i className="ph ph-user-circle" style={{ fontSize: 15 }} />
               Profile diagnostic
             </span>
-            <span className="muted" style={{ fontSize: 13 }}>Step {step + 1} of {QUESTIONS.length}</span>
+            <span className="muted" style={{ fontSize: 13 }}>Step {currentStepNum + 1} of {totalSteps}</span>
           </div>
           <div style={{ height: 5, borderRadius: 9999, background: 'var(--muted)', overflow: 'hidden' }}>
             <div style={{ height: '100%', borderRadius: 9999, background: 'var(--blue-ink-600)', width: `${progress}%`, transition: 'width 300ms var(--ease-out)' }} />
           </div>
         </div>
 
+        {/* Identity step — name + role */}
+        {nameStep && (
+          <div key="identity" style={{ animation: 'di-enter 260ms var(--ease-out)' }}>
+            <h2 style={{ marginBottom: 8 }}>First, tell us about you.</h2>
+            <p className="muted" style={{ marginBottom: 24 }}>Your name shows up in your profile and throughout the app.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div className="field">
+                <label>Your name <span style={{ color: 'var(--primary)' }}>*</span></label>
+                <input
+                  autoFocus
+                  placeholder="e.g. Alex Johnson"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && name.trim() && goNext()}
+                />
+              </div>
+              <div className="field">
+                <label>Your role <span style={{ color: 'var(--fg-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+                <input
+                  placeholder="e.g. Product Manager, Lawyer, Founder…"
+                  value={role}
+                  onChange={e => setRole(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && name.trim() && goNext()}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Question */}
+        {!nameStep && (
         <div key={`q${step}`} style={{ animation: 'di-enter 260ms var(--ease-out)' }}>
           <h2 style={{ marginBottom: 8 }}>{q.title}</h2>
           <p className="muted" style={{ marginBottom: 24 }}>{q.subtitle}</p>
@@ -396,16 +463,17 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
             </div>
           )}
         </div>
+        )}
 
         {/* Nav */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
           <button
-            disabled={step === 0}
+            disabled={nameStep}
             onClick={goBack}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, height: 44, padding: '0 16px',
-              border: 'none', background: 'none', color: step === 0 ? 'var(--border)' : 'var(--fg-muted)',
-              cursor: step === 0 ? 'default' : 'pointer', fontSize: 15, borderRadius: 'var(--radius-md)',
+              border: 'none', background: 'none', color: nameStep ? 'var(--border)' : 'var(--fg-muted)',
+              cursor: nameStep ? 'default' : 'pointer', fontSize: 15, borderRadius: 'var(--radius-md)',
             }}
           >
             <i className="ph ph-arrow-left" style={{ fontSize: 15 }} />Back
@@ -415,7 +483,7 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
             disabled={!answered || saving}
             onClick={goNext}
           >
-            {saving ? 'Saving…' : step === QUESTIONS.length - 1 ? 'See my profile' : 'Continue'}
+            {saving ? 'Saving…' : (!nameStep && step === QUESTIONS.length - 1) ? 'See my profile' : 'Continue'}
             {!saving && <i className="ph-bold ph-arrow-right" />}
           </button>
         </div>
@@ -565,7 +633,12 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
               await fetch('/api/user', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ profileAnswers: answers, onboardingCompleted: true }),
+                body: JSON.stringify({
+                  name: name.trim(),
+                  role: role.trim() || null,
+                  profileAnswers: answers,
+                  onboardingCompleted: true,
+                }),
               })
               setSaving(false)
               setMode('view')
@@ -598,19 +671,63 @@ export function Profile({ data, isFresh, savedAnswers }: Props) {
 
       <div className="card">
         <div className="card-section">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div className="profile-ring">
-              <div className="profile-avatar">{profile.initials}</div>
+          {editingIdentity ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className="field">
+                <label>Name</label>
+                <input
+                  autoFocus
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  placeholder="Your name"
+                />
+              </div>
+              <div className="field">
+                <label>Role <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: 'var(--fg-muted)' }}>(optional)</span></label>
+                <input
+                  value={editRole}
+                  onChange={e => setEditRole(e.target.value)}
+                  placeholder="e.g. Product Manager, Lawyer, Founder…"
+                />
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  className="btn-lime"
+                  disabled={!editName.trim() || savingIdentity}
+                  onClick={saveIdentityEdit}
+                  style={{ height: 36, padding: '0 16px', fontSize: 13 }}
+                >
+                  {savingIdentity ? 'Saving…' : 'Save'}
+                </button>
+                <button
+                  className="btn-outline"
+                  onClick={() => { setEditingIdentity(false); setEditName(data.profile.name); setEditRole(data.profile.role) }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 22, color: 'var(--fg)' }}>{profile.name}</div>
-              <div className="muted" style={{ marginTop: 2 }}>{profile.role}</div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div className="profile-ring">
+                <div className="profile-avatar">{profile.initials || '?'}</div>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 22, color: 'var(--fg)' }}>
+                  {profile.name || <span style={{ color: 'var(--fg-muted)', fontStyle: 'italic', fontSize: 18 }}>No name set</span>}
+                </div>
+                {profile.role && <div className="muted" style={{ marginTop: 2 }}>{profile.role}</div>}
+              </div>
+              <button
+                className="btn-outline"
+                onClick={() => { setEditName(data.profile.name); setEditRole(data.profile.role); setEditingIdentity(true) }}
+                style={{ flexShrink: 0 }}
+              >
+                <i className="ph ph-pencil-simple" style={{ fontSize: 14 }} />
+                Edit
+              </button>
             </div>
-          </div>
-        </div>
-        <div className="card-section">
-          <div className="label-xs" style={{ marginBottom: 8 }}>Decision context</div>
-          <p style={{ fontSize: 15, lineHeight: '24px', color: 'var(--fg)' }}>{profile.decisionContext}</p>
+          )}
         </div>
       </div>
 

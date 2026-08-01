@@ -36,11 +36,11 @@ export default async function LogPage() {
   const data: AppData = {
     profile: {
       name: user.name ?? '',
-      initials: (user.name ?? '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
-      role: '',
+      initials: user.initials ?? (user.name ?? '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+      role: user.role ?? '',
       decisionContext: '',
-      calibration: 0,
-      createdAt: new Date().toISOString(),
+      calibration: user.calibration,
+      createdAt: user.createdAt.toISOString(),
     },
     decisions: userDecisions.map(d => ({
       id: d.id,

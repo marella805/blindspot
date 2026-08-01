@@ -63,7 +63,7 @@ function buildSystemPrompt({
   const decisionContext = [
     decisionSummary ? `Context: ${decisionSummary}` : null,
     decisionOptions && decisionOptions.length > 0
-      ? `Options on the table: ${decisionOptions.join(' · ')}`
+      ? `Options on the table: ${decisionOptions.join(' · ')}\nDirectly probe the tradeoffs between these specific options. Ask the user what they're optimizing for between them and what would make each option the wrong choice.`
       : null,
   ].filter(Boolean).join('\n')
 

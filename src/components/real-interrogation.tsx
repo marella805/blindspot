@@ -136,7 +136,12 @@ export function RealInterrogation({ onComplete }: Props) {
   // Send the opening message once the session is ready
   useEffect(() => {
     if (phase === 'chat' && sessionData && messages.length === 0 && !isLoading) {
-      append({ role: 'user', content: `I need to think through this decision: ${title}` })
+      const filledOptions = options.filter(o => o.trim())
+      const optionText = filledOptions.length > 0
+        ? ` My options are: ${filledOptions.join(', ')}.`
+        : ''
+      const summaryText = summary.trim() ? ` Context: ${summary.trim()}.` : ''
+      append({ role: 'user', content: `I need to think through this decision: ${title}.${summaryText}${optionText}` })
     }
   }, [phase, sessionData]) // eslint-disable-line react-hooks/exhaustive-deps
 

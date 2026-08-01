@@ -9,7 +9,7 @@
  */
 import { generateText } from 'ai'
 import { groq } from '@/lib/ai'
-import { resend, verifyCron } from '@/lib/agents'
+import { getResend, verifyCron } from '@/lib/agents'
 import { db } from '@/lib/db'
 import { reflections, decisions, users } from '@/lib/db/schema'
 import { and, isNull, lte, eq } from 'drizzle-orm'
@@ -52,7 +52,7 @@ Rules:
 - Sign as "Plato · Blindspot"`,
     })
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'Blindspot <reflections@resend.dev>',
       to: user.email,
       subject: `Time to reflect: "${r.decision.title}"`,

@@ -9,7 +9,7 @@
  */
 import { generateText } from 'ai'
 import { groq } from '@/lib/ai'
-import { resend, verifyCron } from '@/lib/agents'
+import { getResend, verifyCron } from '@/lib/agents'
 import { db } from '@/lib/db'
 import { decisions, reflections, patternAlerts, users } from '@/lib/db/schema'
 import { and, eq, isNull, lte, isNotNull } from 'drizzle-orm'
@@ -72,7 +72,7 @@ Rules:
 - Sign as "Marcus · Blindspot"`,
     })
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'Blindspot <morning@resend.dev>',
       to: user.email,
       subject: `Your morning brief`,

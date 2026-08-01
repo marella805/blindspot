@@ -9,7 +9,7 @@
  */
 import { generateObject } from 'ai'
 import { groq } from '@/lib/ai'
-import { resend, verifyCron } from '@/lib/agents'
+import { getResend, verifyCron } from '@/lib/agents'
 import { db } from '@/lib/db'
 import { decisions, users, patternAlerts, patternTypes } from '@/lib/db/schema'
 import { eq, gte, inArray } from 'drizzle-orm'
@@ -74,7 +74,7 @@ Write a 2-sentence summary of what you observe about this person's decision-maki
     })
 
     if (object.patterns.length > 0) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: 'Blindspot <patterns@resend.dev>',
         to: user.email,
         subject: `Aristotle found a pattern in your decisions this week`,

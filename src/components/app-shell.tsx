@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
 const NAV = [
@@ -31,6 +31,38 @@ export function AppShell({
   const pathname = usePathname()
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
+  const [cmdOpen, setCmdOpen] = useState(false)
+  const [cmdQuery, setCmdQuery] = useState('')
+  const cmdInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCmdOpen(o => { if (!o) setCmdQuery(''); return !o })
+      }
+      if (e.key === 'Escape') setCmdOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    if (cmdOpen) setTimeout(() => cmdInputRef.current?.focus(), 50)
+  }, [cmdOpen])
+
+  const COMMANDS = [
+    { icon: 'ph-fill ph-play-circle', label: 'Run demo interrogation', hint: 'Demo', action: () => { router.push('/interrogation?demo=true'); setCmdOpen(false) } },
+    { icon: 'ph ph-plus',             label: 'New interrogation',       hint: '',     action: () => { router.push('/interrogation'); setCmdOpen(false) } },
+    { icon: 'ph ph-scales',           label: 'Decision log',            hint: '',     action: () => { router.push('/log'); setCmdOpen(false) } },
+    { icon: 'ph ph-arrow-u-up-left',  label: 'Reflections',             hint: '',     action: () => { router.push('/reflections'); setCmdOpen(false) } },
+    { icon: 'ph ph-chart-line-up',    label: 'Patterns',                hint: '',     action: () => { router.push('/patterns'); setCmdOpen(false) } },
+    { icon: 'ph ph-user',             label: 'Profile',                 hint: '',     action: () => { router.push('/profile'); setCmdOpen(false) } },
+  ]
+
+  const filtered = COMMANDS.filter(c =>
+    !cmdQuery.trim() || c.label.toLowerCase().includes(cmdQuery.toLowerCase())
+  )
 
   const currentNav = NAV.find(n => pathname.startsWith(n.href))?.id ?? 'log'
 
@@ -148,6 +180,39 @@ export function AppShell({
           </div>
         )}
       </div>
+
+      {/* ── Command palette ── */}
+      {cmdOpen && (
+        <div className="cmd-overlay" onClick={() => setCmdOpen(false)}>
+          <div className="cmd-panel" onClick={e => e.stopPropagation()}>
+            <div className="cmd-input-row">
+              <i className="ph ph-magnifying-glass cmd-search-icon" />
+              <input
+                ref={cmdInputRef}
+                placeholder="Search commands…"
+                value={cmdQuery}
+                onChange={e => setCmdQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && filtered[0]) { filtered[0].action() } }}
+              />
+            </div>
+            <div className="cmd-results">
+              <div className="cmd-section-label">Actions</div>
+              {filtered.map((c, i) => (
+                <div key={i} className="cmd-item" onClick={c.action}>
+                  <span className="cmd-item-icon"><i className={c.icon} style={{ fontSize: 15 }} /></span>
+                  <span className="cmd-item-label">{c.label}</span>
+                  {c.hint && <span className="cmd-item-hint">{c.hint}</span>}
+                </div>
+              ))}
+            </div>
+            <div className="cmd-footer">
+              <span><span className="cmd-key">↵</span> select</span>
+              <span><span className="cmd-key">esc</span> close</span>
+              <span><span className="cmd-key">⌘K</span> toggle</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

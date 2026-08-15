@@ -69,6 +69,22 @@ interface Recommendation {
 
 interface Props {
   onComplete: (decisionId?: string) => void
+  demo?: boolean
+}
+
+const DEMO_DATA = {
+  title: 'Should I take the senior PM role at this startup?',
+  summary: "I've been offered a senior PM role at a 50-person Series B startup. It pays 15% less than my current job but has meaningful equity.",
+  category: 'career',
+  options: ['Take the startup role', 'Stay in my current role'],
+  coachingStyle: 'advisor' as CoachingStyle,
+  responses: [
+    "I'm optimizing for learning speed and career trajectory. The equity could be meaningful if they exit, but I know that's a long shot.",
+    "The biggest risk is that the startup fails — statistically likely. But I've been at my current company four years and feel completely stagnant.",
+    "If I'm honest, I'd take the startup role even knowing the risk. I can recover from failure but I can't recover from not trying.",
+    "What I'd need to be wrong about is the equity being worthless and the experience not translating back to a stable role. Both feel recoverable.",
+    "I'm optimizing for the person I'll be in five years, not the salary I have today.",
+  ],
 }
 
 function pushToStyle(push: number): CoachingStyle {
@@ -77,13 +93,14 @@ function pushToStyle(push: number): CoachingStyle {
   return 'advisor'
 }
 
-export function RealInterrogation({ onComplete }: Props) {
+export function RealInterrogation({ onComplete, demo = false }: Props) {
   const [phase, setPhase] = useState<Phase>('intro')
-  const [title, setTitle] = useState('')
-  const [summary, setSummary] = useState('')
-  const [category, setCategory] = useState('other')
-  const [options, setOptions] = useState(['', ''])
-  const [coachingStyle, setCoachingStyle] = useState<CoachingStyle>('advisor')
+  const [title, setTitle] = useState(demo ? DEMO_DATA.title : '')
+  const [summary, setSummary] = useState(demo ? DEMO_DATA.summary : '')
+  const [category, setCategory] = useState(demo ? DEMO_DATA.category : 'other')
+  const [options, setOptions] = useState(demo ? DEMO_DATA.options : ['', ''])
+  const [coachingStyle, setCoachingStyle] = useState<CoachingStyle>(demo ? DEMO_DATA.coachingStyle : 'advisor')
+  const demoResponseIdx = useRef(0)
   const [suggestedStyle, setSuggestedStyle] = useState<CoachingStyle | null>(null)
   const [sessionData, setSessionData] = useState<SessionData | null>(null)
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null)
@@ -130,6 +147,25 @@ export function RealInterrogation({ onComplete }: Props) {
       setTimeout(() => textareaRef.current?.focus(), 100)
     },
   })
+
+  // Demo mode: Cmd+Enter advances through setup phases then sends scripted responses
+  useEffect(() => {
+    if (!demo) return
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.key !== 'Enter') return
+      e.preventDefault()
+      if (phase === 'intro')   { setPhase('context'); return }
+      if (phase === 'context') { setPhase('style');   return }
+      if (phase === 'style')   { startInterrogation(); return }
+      if (phase === 'chat' && !isLoading) {
+        const next = DEMO_DATA.responses[demoResponseIdx.current]
+        if (next) { demoResponseIdx.current++; setInput(next) }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demo, phase, isLoading])
 
   function toggleSpeech() {
     if (isListening) {
@@ -250,6 +286,12 @@ export function RealInterrogation({ onComplete }: Props) {
             <div style={{ marginBottom: 8, fontSize: 13, letterSpacing: '0.03em', color: 'var(--blue-ink-600)', display: 'flex', alignItems: 'center', gap: 7 }}>
               <i className="ph ph-intersect" style={{ fontSize: 15 }} />
               Interrogation
+              {demo && (
+                <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--primary)', background: 'var(--blue-ink-50)', border: '1px solid var(--blue-ink-100)', borderRadius: 6, padding: '2px 8px' }}>
+                  <i className="ph-fill ph-play-circle" />
+                  Demo · ⌘↵ to advance
+                </span>
+              )}
             </div>
             <h2 style={{ marginBottom: 10, fontSize: 28 }}>What's the decision?</h2>
             <p className="muted" style={{ marginBottom: 28, fontSize: 15 }}>
@@ -630,6 +672,12 @@ export function RealInterrogation({ onComplete }: Props) {
           <div style={{ marginBottom: 8, fontSize: 13, letterSpacing: '0.03em', color: 'var(--blue-ink-600)', display: 'flex', alignItems: 'center', gap: 7 }}>
             <i className="ph ph-intersect" style={{ fontSize: 15 }} />
             {title}
+            {demo && (
+              <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--primary)', background: 'var(--blue-ink-50)', border: '1px solid var(--blue-ink-100)', borderRadius: 6, padding: '2px 8px' }}>
+                <i className="ph-fill ph-play-circle" />
+                Demo · ⌘↵ to advance
+              </span>
+            )}
           </div>
 
           {/* Current AI question */}
